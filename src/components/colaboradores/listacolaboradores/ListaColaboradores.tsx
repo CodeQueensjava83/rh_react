@@ -4,6 +4,7 @@ import type Colaboradores from '../../../modals/Colaboradores';
 import CardColaboradores from '../cardcolaboradores/CardColaboradores';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthContext';
+import { listar } from '../../../services/Service';
 
 function ListarColaboradores() {
 
@@ -32,7 +33,7 @@ function ListarColaboradores() {
 
             setIsLoading(true)
 
-            await buscar('/postagens', setColaboradores, {
+            await listar('/colaboradores', setColaboradores, {
                 headers: { Authorization: token }
             })
         } catch (error: any) {
@@ -66,12 +67,12 @@ function ListarColaboradores() {
           )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
-            {colaboradores.map((colaborador) => (
+            {colaboradores.map((colaboradores) => (
               <CardColaboradores
-                key={colaborador.id}
-                colaboradores={colaborador}
-                onCalcular={() => console.log("Calcular salário", colaborador)}
-                onHolerite={() => console.log("Gerar holerite", colaborador)}
+                key={colaboradores.id}
+                colaboradores={colaboradores}
+                onCalcular={() => console.log("Calcular salário", colaboradores)}
+                onHolerite={() => console.log("Gerar holerite", colaboradores)}
               />
             ))}
           </div>
