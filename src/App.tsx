@@ -6,7 +6,7 @@ import QuemSomos from "./pages/quemsomos/QuemSomos";
 import OQueFazemos from "./pages/oquefazemos/OQueFazemos";
 
 
-export default function App() {
+function App() {
   return (
     <BrowserRouter>
       <Navbar />
@@ -18,5 +18,7 @@ export default function App() {
       </Routes>
       <Footer />
     </BrowserRouter>
+
   );
 }
+export default App;
