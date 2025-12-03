@@ -1,6 +1,6 @@
 import Home from './pages/home/Home';
 
-export default function App() {
+function App() {
   return (
     <Home />
   )
