@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { List, X, User, CaretDown } from "@phosphor-icons/react";
 import { useState } from "react";
+import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -91,6 +92,18 @@ export default function Navbar() {
               <User size={22} weight="bold" /> Login
             </Link>
           </li>
+          {/* SAIR */}
+          <li>
+            <Link
+              to="/"
+              className="flex items-center gap-2 border border-white rounded-full px-5 py-2 
+               hover:bg-white hover:text-orange-500 transition font-semibold
+               text-lg md:text-xl"
+            >
+              <SignOut size={22} weight="bold" /> Sair
+            </Link>
+          </li>
+
         </ul>
       </div>
     </nav>
