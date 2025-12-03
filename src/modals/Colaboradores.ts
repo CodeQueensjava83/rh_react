@@ -6,6 +6,6 @@ export default interface Colaboradores {
     titulo: string;
     texto: string;
     data: string;
-    departamentos: Departamentos | null;
+    departamento: Departamentos | null;
     usuario: Usuario | null;
 }
