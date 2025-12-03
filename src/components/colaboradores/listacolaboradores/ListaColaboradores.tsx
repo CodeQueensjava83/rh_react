@@ -1,28 +1,48 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ClipLoader } from 'react-spinners';
 import type Colaboradores from '../../../modals/Colaboradores';
 import CardColaboradores from '../cardcolaboradores/CardColaboradores';
-import { listar } from '../../../services/Service';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/AuthContext';
 
 function ListarColaboradores() {
+
+  const navigate = useNavigate();
+
   const [colaboradores, setColaboradores] = useState<Colaboradores[]>([]);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  async function buscarColaboradores() {
-    setIsLoading(true);
-    try {
-      const data = await listar('/colaboradores');
-      setColaboradores(data);
-    } catch (error) {
-      alert('Erro ao listar todos os colaboradores!');
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const { usuario, hadleLogout } = useContext(AuthContext)
+  const token = usuario.token
 
   useEffect(() => {
-    buscarColaboradores();
-  }, []); // só roda uma vez ao montar
+    if (token === '') {
+      alert('Você precisa estar logado para acessar essa página.')
+      navigate('/login')
+    }
+  }, [token])
+
+  useEffect(() => {
+    buscarColaboradores()
+  }, [colaboradores.length])
+
+     async function buscarColaboradores() {
+        try {
+
+            setIsLoading(true)
+
+            await buscar('/postagens', setColaboradores, {
+                headers: { Authorization: token }
+            })
+        } catch (error: any) {
+            if (error.toString().includes('401')) {
+                handleLogout()
+            }
+        }finally {
+            setIsLoading(false)
+        }
+    }
 
   return (
     <>
