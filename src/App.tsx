@@ -4,6 +4,8 @@ import Deletardepartamentos from './components/departamentos/deletardepartamento
 import FormDepartamentos from './components/departamentos/formdepartamentos/FormDepartamentos';
 import ListaDepartamentos from './components/departamentos/listadepartamentos/ListaDepartamentos';
 import Navbar from './components/navbar/Navbar';
+import QuemSomos from './pages/quemsomos/QuemSomos';
+import OQueFazemos from './pages/oquefazemos/OQueFazemos';
 
 function App() {
 	return (
@@ -17,6 +19,8 @@ function App() {
 			<Routes>
               <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/quem-somos" element={<QuemSomos />} />
+              <Route path="/oque-fazemos" element={<OQueFazemos />} />
               <Route path="/departamentos" element={<ListaDepartamentos />} />
               <Route path="/carddepartamentos" element={<FormDepartamentos />} />
               <Route path="/editardepartamentos/:id" element={<FormDepartamentos />} />
