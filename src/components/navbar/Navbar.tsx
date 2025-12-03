@@ -7,7 +7,7 @@ export default function Navbar() {
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
   return (
-    <nav className="w-full bg-orange-500 text-white shadow-md">
+    <nav className="relative z-50 w-full bg-orange-500 text-white shadow-md">
       <div className="container mx-auto flex justify-between items-center py-4 px-4">
 
         {/* LOGO */}
@@ -42,8 +42,8 @@ export default function Navbar() {
 
             {/* SUBMENU DESKTOP */}
             <ul
-              className="hidden group-hover:flex flex-col absolute left-0 mt-2 bg-white text-gray-700 
-              shadow-lg rounded-lg overflow-hidden w-40 transition-all duration-200"
+              className="hidden group-hover:flex flex-col absolute left-0 mt-2 bg-white text-gray-700
+              shadow-lg rounded-lg overflow-hidden w-40 transition-all duration-200 z-50"
             >
               <Link to="/colaboradores" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
               <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamento</Link>
@@ -52,7 +52,7 @@ export default function Navbar() {
 
             {/* SUBMENU MOBILE */}
             {submenuOpen && (
-              <ul className="flex flex-col md:hidden bg-white text-gray-700 mt-2 rounded-lg shadow">
+              <ul className="flex flex-col md:hidden bg-white text-gray-700 mt-2 rounded-lg shadow z-50">
                 <Link to="/colaboradores" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
                 <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamento</Link>
                 <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuário</Link>
