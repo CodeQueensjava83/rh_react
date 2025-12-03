@@ -1,58 +1,59 @@
-import { createContext, type ReactNode, useState, useEffect } from "react";
-import { login } from "../services/Service";
-import type UsuarioLogin from "../modals/UsuarioLogin";
+import { createContext, type ReactNode, useState } from "react"
+import { ToastAlerta } from "../utils/ToastAlert"
+import type UsuarioLogin from "../modals/UsuarioLogin"
+import { login } from "../services/Service"
 
 interface AuthContextProps {
-  usuario: UsuarioLogin | null;
-  handleLogout(): void;
-  handleLogin(usuario: UsuarioLogin): Promise<void>;
-  isLoading: boolean;
+    usuario: UsuarioLogin
+    handleLogout(): void
+    handleLogin(usuario: UsuarioLogin): Promise<void>
+    isLoading: boolean
 }
 
 interface AuthProviderProps {
-  children: ReactNode;
+    children: ReactNode
 }
 
-export const AuthContext = createContext({} as AuthContextProps);
+export const AuthContext = createContext({} as AuthContextProps)
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [usuario, setUsuario] = useState<UsuarioLogin | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("usuario");
-    if (storedUser) {
-      setUsuario(JSON.parse(storedUser));
+    const [usuario, setUsuario] = useState<UsuarioLogin>({
+        id: 0,
+        nome: "",
+        usuario: "",
+        senha: "",
+        foto: "",
+        token: ""
+    })
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    async function handleLogin(usuarioLogin: UsuarioLogin) {
+        setIsLoading(true)
+        try {
+            await login(`/usuarios/logar`, usuarioLogin, setUsuario)
+            ToastAlerta("Usuário foi autenticado com sucesso!", "sucesso")
+        } catch (error) {
+            ToastAlerta("Os dados do Usuário estão inconsistentes!", "erro")
+        }
+        setIsLoading(false)
     }
-  }, []);
 
-  async function handleLogin(usuarioLogin: UsuarioLogin) {
-    setIsLoading(true);
-    try {
-      const data = await login(`/usuarios/logar`, usuarioLogin);
-
-      const { id, nome, usuario, foto, token } = data;
-      const safeUser = { id, nome, usuario, foto, token };
-
-      setUsuario(safeUser);
-      localStorage.setItem("usuario", JSON.stringify(safeUser));
-
-      alert("Usuário foi autenticado com sucesso!");
-    } catch {
-      alert("Os dados do Usuário estão inconsistentes!");
-    } finally {
-      setIsLoading(false);
+    function handleLogout() {
+        setUsuario({
+            id: 0,
+            nome: "",
+            usuario: "",
+            senha: "",
+            foto: "",
+            token: ""
+        })
     }
-  }
 
-  function handleLogout() {
-    setUsuario(null);
-    localStorage.removeItem("usuario");
-  }
-
-  return (
-    <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
