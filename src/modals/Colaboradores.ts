@@ -3,9 +3,13 @@ import type Usuario from "./Usuario";
 
 export default interface Colaboradores {
     id: number;
-    titulo: string;
-    texto: string;
-    data: string;
+    nome: string;
+    email: string;
+    cargo: string;
+    salario: number;
+    foto: string;
+    horasMensais: number;
+    dependentes: number;
     departamento: Departamentos | null;
     usuario: Usuario | null;
 }
