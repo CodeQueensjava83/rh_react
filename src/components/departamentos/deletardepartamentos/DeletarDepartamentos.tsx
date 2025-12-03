@@ -1,115 +1,83 @@
-import { useState, useContext, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { ClipLoader } from "react-spinners"
-import { AuthContext } from "../../../contexts/AuthContext"
-import type Departamentos from "../../../modals/Departamentos"
-import { buscar, deletar } from "../../../services/Service"
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+import type Departamentos from "../../../modals/Departamentos";
+import { deletar, listar } from "../../../services/Service";
 
+function DeletarDepartamentos() {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [departamento, setDepartamento] = useState<Departamentos | null>(null);
 
-
-function Deletardepartamentos() {
-
-    const navigate = useNavigate()
-
-	const [isLoading, setIsLoading] = useState<boolean>(false)
-
-	const [departamentos, setdepartamentos] = useState<Departamentos>({} as Departamentos)
-
-	const { usuario, handleLogout } = useContext(AuthContext)
-	const token = usuario.token
-
-	const { id } = useParams<{ id: string }>()
-
-	async function buscardepartamentosPorId() {
-		try {
-			await buscar(`/departamentos/${id}`, setdepartamentos, {
-				headers: { Authorization: token },
-			})
-		} catch (error: any) {
-			if (error.toString().includes("401")) {
-				handleLogout()
-			}
-		} 
-	}
-
-    useEffect(() => {
-        if(id !== undefined){
-            buscardepartamentosPorId();
-        }
-    }, [id])
-
-	useEffect(() => {
-		if (token === "") {
-			//Alerta("Você precisa estar logado!", "info")
-			navigate("/")
-		}
-	}, [token])
-
-	function retornar() {
-		navigate("/departamentoss")
-	}
-
-    async function deletardepartamentos(){
-        setIsLoading(true);
-
-        try{
-
-            await deletar(`/departamentoss/${id}`, {
-                headers: { Authorization: token}
-            })
-
-            //Alerta('departamentos deletado com sucesso!', "sucesso")
-
-        }catch(error: any){
-            if(error.toString().includes('401')){
-                handleLogout();
-            }else{
-             //   Alerta('Erro ao deletar o departamentos!', "erro")
-            }
-        }
-
-        setIsLoading(false);
-        retornar();
+  async function buscarPorId(id: string) {
+    try {
+      const data = await listar(`/departamentos/${id}`);
+      setDepartamento(data);
+    } catch (error) {
+      alert("Departamento não encontrado!");
+      console.error(error);
     }
+  }
 
-    return (
-        <div className='container w-1/3 mx-auto'>
-            <h1 className='text-4xl text-center my-4'>Deletar departamento</h1>
-            <p className='text-center font-semibold mb-4'>
-                Você tem certeza de que deseja apagar o departamento a seguir?</p>
-            <div className='border flex flex-col rounded-2xl overflow-hidden justify-between'>
-                <header 
-                    className='py-2 px-6 bg-indigo-600 text-white font-bold text-2xl'>
-                    departamentos
-                </header>
-                <p className='p-8 text-3xl bg-slate-200 h-full'>{departamentos.descricao}</p>
-                <div className="flex">
-                    <button 
-                        className='text-slate-100 bg-red-400 hover:bg-red-600 w-full py-2'
-                        onClick={retornar}    
-                    >
-                        Não
-                    </button>
-                    <button 
-                        className='w-full text-slate-100 bg-indigo-400 
-                                   hover:bg-indigo-600 flex items-center justify-center'
-                            onClick={deletardepartamentos}
-                        >
-                        {
-                            isLoading ?
-                                <ClipLoader 
-                                    color="#ffffff"
-                                    size={24}
-                                />
-                            :
-                            <span>Sim</span>                        
-                        }
-                        
-                    </button>
-                </div>
-            </div>
+  useEffect(() => {
+    if (id) buscarPorId(id);
+  }, [id]);
+
+  async function deletarDepartamento() {
+    setIsLoading(true);
+    try {
+      await deletar(`/departamentos/${id}`);
+      alert("Departamento apagado com sucesso!");
+      retornar();
+    } catch (error) {
+      alert("Erro ao apagar o departamento!");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function retornar() {
+    navigate("/departamentos");
+  }
+
+  return (
+    <div className="w-full max-w-md m-16 pt-4 pb-4 mx-auto sm:pt-6 sm:pb-6">
+      <h1 className="py-4 text-3xl text-center md:text-4xl font-bold uppercase text-orange-400">
+        Deletar Departamento
+      </h1>
+      <p className="mb-4 text-base font-semibold text-center md:text-lg">
+        Você tem certeza de que deseja apagar o departamento a seguir?
+      </p>
+      <div className="flex flex-col justify-between overflow-hidden border rounded-2xl">
+        <header className="px-4 py-2 text-lg font-semibold text-black md:px-6 bg-orange-400 uppercase md:text-2xl">
+          Departamento
+        </header>
+        {departamento && (
+          <p className="h-full p-4 text-xl bg-white md:p-8 md:text-3xl">
+            {departamento.descricao}
+          </p>
+        )}
+        <div className="flex flex-row">
+          <button
+            className="w-full py-2 text-base bg-red-200 text-white hover:bg-red-500 md:text-lg"
+            onClick={retornar}
+          >
+            Não
+          </button>
+          <button
+            className="flex items-center justify-center w-full text-base bg-green-200 text-white hover:bg-green-400 md:text-lg"
+            onClick={deletarDepartamento}
+            disabled={isLoading}
+          >
+            {isLoading ? <ClipLoader color="#ffffff" size={24} /> : <span>Sim</span>}
+          </button>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
-export default Deletardepartamentos
+
+export default DeletarDepartamentos;

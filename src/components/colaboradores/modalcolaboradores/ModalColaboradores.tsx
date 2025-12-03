@@ -1,21 +1,26 @@
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
-import FormColaboradores from '../formcolaboradores/FormColaboradores';
+import Popup from "reactjs-popup";
+import FormColaboradores from "../formcolaboradores/FormColaboradores";
 
 function ModalColaboradores() {
     return (
         <>
             <Popup
                 trigger={
-                    <button 
-                        className='border rounded px-4 py-2 hover:bg-white hover:text-indigo-800'>
-                        Novo Colaborador
+                    <button
+                        className="px-4 py-2 rounded-3xl lg:rounded-full bg-white/25 hover:bg-white/85 border border-white transition"
+                        onClick={() => console.log("Botão clicado!")}
+                    >
+                        Cadastrar Colaborador
                     </button>
                 }
                 modal
                 contentStyle={{
+                    width: "40%",
+                    maxWidth: "90%",
+                    height: "80%",
                     borderRadius: '1rem',
-                    paddingBottom: '2rem'
+                    paddingBottom: '2rem',
+                    backgroundColor: 'white'
                 }}
             >
                 <FormColaboradores />
@@ -23,5 +28,4 @@ function ModalColaboradores() {
         </>
     );
 }
-
 export default ModalColaboradores;
