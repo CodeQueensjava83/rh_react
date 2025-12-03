@@ -14,7 +14,7 @@ function ListarColaboradores() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { usuario, hadleLogout } = useContext(AuthContext)
+  const { usuario, hadleLogout } = useContext(AuthContext);
   const token = usuario.token
 
   useEffect(() => {
@@ -33,7 +33,7 @@ function ListarColaboradores() {
 
             setIsLoading(true)
 
-            await listar('/colaboradores', setColaboradores, {
+            await listar('/colaboradores/all', setColaboradores, {
                 headers: { Authorization: token }
             })
         } catch (error: any) {
