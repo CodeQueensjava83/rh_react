@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ClipLoader } from 'react-spinners';
 import type Colaboradores from '../../../modals/Colaboradores';
 import CardColaboradores from '../cardcolaboradores/CardColaboradores';
-import { listar } from '../../../services/Service'; // certifique-se de importar
+import { listar } from '../../../services/Service';
 
 function ListarColaboradores() {
   const [colaboradores, setColaboradores] = useState<Colaboradores[]>([]);
@@ -13,7 +13,7 @@ function ListarColaboradores() {
     try {
       const data = await listar('/colaboradores');
       setColaboradores(data);
-    } catch {
+    } catch (error) {
       alert('Erro ao listar todos os colaboradores!');
     } finally {
       setIsLoading(false);
