@@ -20,7 +20,7 @@ function ListarColaboradores() {
   useEffect(() => {
     if (token === '') {
       alert('Você precisa estar logado para acessar essa página.')
-      navigate('/login')
+      navigate('/')
     }
   }, [token])
 
@@ -34,7 +34,7 @@ function ListarColaboradores() {
             setIsLoading(true)
 
             await listar('/colaboradores/all', setColaboradores, {
-                headers: { Authorization: token }
+                headers: { Authorization: token}
             })
         } catch (error: any) {
             if (error.toString().includes('401')) {

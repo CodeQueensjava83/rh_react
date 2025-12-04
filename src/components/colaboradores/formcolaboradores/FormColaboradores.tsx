@@ -59,7 +59,7 @@ function FormColaboradores() {
   }
 
   function retornar() {
-    navigate("/colaboradores");
+    navigate("/colaboradores/all");
   }
 
   async function gerarNovoColaborador(e: FormEvent<HTMLFormElement>) {
@@ -68,10 +68,10 @@ function FormColaboradores() {
 
     try {
       if (id) {
-        await atualizar(`/colaboradores`, colaborador);
+        await atualizar(`/colaboradores/all`, colaborador);
         alert("Colaborador atualizado com sucesso!");
       } else {
-        await cadastrar(`/colaboradores`, colaborador);
+        await cadastrar(`/colaboradores/all`, colaborador);
         alert("Colaborador cadastrado com sucesso!");
       }
       retornar();

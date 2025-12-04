@@ -25,7 +25,7 @@ function DeletarColaboradores() {
   }, [id]);
 
   function retornar() {
-    navigate("/colaboradores");
+    navigate("/colaboradores/all");
   }
 
   async function deletarColaborador() {
