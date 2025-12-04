@@ -11,10 +11,15 @@ import ListaColaboradores from './components/colaboradores/listacolaboradores/Li
 import FormColaboradores from './components/colaboradores/formcolaboradores/FormColaboradores';
 import DeletarColaboradores from './components/colaboradores/deletarcolaboradores/DeletarColaboradores';
 import { AuthProvider } from './contexts/AuthContext';
+import 'react-toastify/dist/ReactToastify.css';
+import AtualizarPerfil from './pages/perfil/AtualizarPerfil';
+import Perfil from './pages/perfil/Perfil';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <AuthProvider>
+      <ToastContainer />
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
@@ -25,11 +30,8 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
-<<<<<<< HEAD
               <Route path="/colaboradores" element={<ListaColaboradores />} />
-=======
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />
->>>>>>> d9d9f6d235243f6499ff8acec27737dc686396f1
               <Route path="/cardcolaboradores" element={<FormColaboradores />} />
               <Route path="/editarcolaboradores/:id" element={<FormColaboradores />} />
               <Route path="/deletarcolaboradores/:id" element={<DeletarColaboradores />} />
@@ -37,6 +39,8 @@ function App() {
               <Route path="/carddepartamentos" element={<FormDepartamentos />} />
               <Route path="/editardepartamentos/:id" element={<FormDepartamentos />} />
               <Route path="/deletardepartamentos/:id" element={<DeletarDepartamentos />} />
+              <Route path="/perfil" element={<Perfil />} />
+							<Route path="/atualizarusuario" element={<AtualizarPerfil />} />
             </Routes>
           </div>
         </div>

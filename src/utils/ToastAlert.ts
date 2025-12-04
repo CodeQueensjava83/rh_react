@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
 
+
 export function ToastAlerta(mensagem: string, tipo: string) {
     switch (tipo) {
             
