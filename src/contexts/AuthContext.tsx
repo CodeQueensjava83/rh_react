@@ -1,59 +1,94 @@
-import { createContext, type ReactNode, useState } from "react"
-import { ToastAlerta } from "../utils/ToastAlert"
-import type UsuarioLogin from "../modals/UsuarioLogin"
-import { login } from "../services/Service"
+import { createContext, type ReactNode, useState, useEffect } from "react";
+import { ToastAlerta } from "../utils/ToastAlert";
+import type UsuarioLogin from "../modals/UsuarioLogin";
+import { login } from "../services/Service";
 
 interface AuthContextProps {
-    usuario: UsuarioLogin
-    handleLogout(): void
-    handleLogin(usuario: UsuarioLogin): Promise<void>
-    isLoading: boolean
+  usuario: UsuarioLogin;
+  handleLogout(): void;
+  handleLogin(usuario: UsuarioLogin): Promise<void>;
+  isLoading: boolean;
 }
 
 interface AuthProviderProps {
-    children: ReactNode
+  children: ReactNode;
 }
 
-export const AuthContext = createContext({} as AuthContextProps)
+export const AuthContext = createContext({} as AuthContextProps);
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [usuario, setUsuario] = useState<UsuarioLogin>({
+    id: 0,
+    nome: "",
+    usuario: "",
+    senha: "",
+    foto: "",
+    token: ""
+  });
 
-    const [usuario, setUsuario] = useState<UsuarioLogin>({
-        id: 0,
-        nome: "",
-        usuario: "",
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Evita autologin com token inválido ou vazio
+  useEffect(() => {
+    const savedUser = localStorage.getItem("usuario");
+
+    if (savedUser) {
+      const usuarioObj = JSON.parse(savedUser);
+
+      if (usuarioObj.token && usuarioObj.token.trim() !== "") {
+        setUsuario(usuarioObj);
+      } else {
+        localStorage.removeItem("usuario");
+      }
+    }
+  }, []);
+
+  async function handleLogin(usuarioLogin: UsuarioLogin) {
+    setIsLoading(true);
+
+    try {
+      const resposta = await login("/usuarios/logar", usuarioLogin);
+
+      const usuarioFinal: UsuarioLogin = {
+        id: resposta.usuario.id,
+        nome: resposta.usuario.nome,
+        usuario: resposta.usuario.usuario,
         senha: "",
-        foto: "",
-        token: ""
-    })
+        foto: resposta.usuario.foto,
+        token: resposta.token,
+      };
 
-    const [isLoading, setIsLoading] = useState(false)
+      setUsuario(usuarioFinal);
+      localStorage.setItem("usuario", JSON.stringify(usuarioFinal));
 
-    async function handleLogin(usuarioLogin: UsuarioLogin) {
-        setIsLoading(true)
-        try {
-            await login(`/usuarios/logar`, usuarioLogin, setUsuario)
-            ToastAlerta("Usuário foi autenticado com sucesso!", "sucesso")
-        } catch (error) {
-            ToastAlerta("Os dados do Usuário estão inconsistentes!", "erro")
-        }
-        setIsLoading(false)
+      ToastAlerta("Usuário autenticado!", "sucesso");
+
+    } catch (error) {
+      ToastAlerta("Erro ao autenticar usuário!", "erro");
     }
 
-    function handleLogout() {
-        setUsuario({
-            id: 0,
-            nome: "",
-            usuario: "",
-            senha: "",
-            foto: "",
-            token: ""
-        })
-    }
+    setIsLoading(false);
+  }
 
-    return (
-        <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
-            {children}
-        </AuthContext.Provider>
-    )
+  function handleLogout() {
+    setUsuario({
+      id: 0,
+      nome: "",
+      usuario: "",
+      senha: "",
+      foto: "",
+      token: ""
+    });
+    localStorage.removeItem("usuario");
+  }
+
+  return (
+    <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
+
+
+
+

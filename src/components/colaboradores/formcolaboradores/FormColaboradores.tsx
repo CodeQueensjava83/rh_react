@@ -59,7 +59,7 @@ function FormColaboradores() {
   }
 
   function retornar() {
-    navigate("/colaboradores/all");
+    navigate("/colaboradores");
   }
 
   async function gerarNovoColaborador(e: FormEvent<HTMLFormElement>) {

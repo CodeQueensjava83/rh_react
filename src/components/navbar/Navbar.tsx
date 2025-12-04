@@ -45,7 +45,7 @@ export default function Navbar() {
               className="hidden group-hover:flex flex-col absolute left-0 mt-2 bg-white text-gray-700
               shadow-lg rounded-lg overflow-hidden w-40 transition-all duration-200 z-50"
             >
-              <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
+              <Link to="/colaboradores" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
               <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamento</Link>
               <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuário</Link>
             </ul>

@@ -1,85 +1,103 @@
-import { useContext, useEffect, useState } from 'react'
-import { ClipLoader } from 'react-spinners';
-import type Colaboradores from '../../../modals/Colaboradores';
-import CardColaboradores from '../cardcolaboradores/CardColaboradores';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../../contexts/AuthContext';
-import { listar } from '../../../services/Service';
+import { useContext, useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
+import type Colaboradores from "../../../modals/Colaboradores";
+import CardColaboradores from "../cardcolaboradores/CardColaboradores";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { listar } from "../../../services/Service";
 
-function ListarColaboradores() {
-
+function ListaColaboradores() {
   const navigate = useNavigate();
+  const { usuario } = useContext(AuthContext);
 
+  const token = usuario?.token ?? "";
   const [colaboradores, setColaboradores] = useState<Colaboradores[]>([]);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { usuario, hadleLogout } = useContext(AuthContext);
-  const token = usuario.token
-
+  // Redireciona se não tiver token
   useEffect(() => {
-    if (token === '') {
-      alert('Você precisa estar logado para acessar essa página.')
-      navigate('/')
+    if (!token) {
+      alert("Você precisa estar logado!");
+      navigate("/");
     }
-  }, [token])
+  }, [token, navigate]);
 
+  // Carrega colaboradores quando o token estiver disponível
   useEffect(() => {
-    buscarColaboradores()
-  }, [colaboradores.length])
+    if (token) buscarColaboradores();
+  }, [token]);
 
-     async function buscarColaboradores() {
-        try {
+  async function buscarColaboradores() {
+    try {
+      setIsLoading(true);
 
-            setIsLoading(true)
+      console.log("▶ Buscando colaboradores...");
+      console.log("TOKEN ENVIADO:", token);
 
-            await listar('/colaboradores/all', setColaboradores, {
-                headers: { Authorization: token}
-            })
-        } catch (error: any) {
-            if (error.toString().includes('401')) {
-                handleLogout()
-            }
-        }finally {
-            setIsLoading(false)
-        }
+      const response = await listar("/colaboradores/all", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("📌 Resposta da API:", response);
+
+      // Valida resposta antes de salvar
+      if (!response || !Array.isArray(response)) {
+        console.error("❌ API não retornou um array válido:", response);
+        alert("Erro ao carregar colaboradores: resposta inválida do servidor.");
+        return;
+      }
+
+      setColaboradores(response);
+    } catch (error: any) {
+      console.error("❌ Erro ao buscar colaboradores:", error);
+
+      if (error.response?.status === 401) {
+        alert("Sessão expirada! Faça login novamente.");
+        navigate("/");
+      } else {
+        alert("Erro ao carregar colaboradores.");
+      }
+    } finally {
+      setIsLoading(false);
     }
+  }
 
   return (
     <>
       {isLoading && (
         <div className="flex justify-center w-full my-8">
-          <ClipLoader
-            color="#0D9488"
-            size={80}
-            speedMultiplier={2}
-            aria-label="loading"
-          />
+          <ClipLoader color="#0D9488" size={80} speedMultiplier={2} />
         </div>
       )}
 
-      <div className="flex justify-center w-full bg-slate-200 min-h-[70vh] overflow-x-hidden">
-        <div className="box-border w-full px-4 py-4 mt-8 max-w-8xl sm:px-6 md:px-8 lg:px-12 md:py-6">
+      <div className="flex justify-center w-full bg-slate-200 min-h-[70vh]">
+        <div className="box-border w-full px-4 py-4 mt-8">
           {!isLoading && colaboradores.length === 0 && (
             <span className="text-3xl text-center my-8">
               Nenhum Colaborador foi encontrado!
             </span>
           )}
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
-            {colaboradores.map((colaboradores) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {colaboradores.map((colaborador) => (
               <CardColaboradores
-                key={colaboradores.id}
-                colaboradores={colaboradores}
-                onCalcular={() => console.log("Calcular salário", colaboradores)}
-                onHolerite={() => console.log("Gerar holerite", colaboradores)}
+                key={colaborador.id}
+                colaboradores={colaborador}
+                onCalcular={() => console.log("Calcular salário", colaborador)}
+                onHolerite={() => console.log("Gerar holerite", colaborador)}
               />
             ))}
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default ListarColaboradores
+export default ListaColaboradores;
+
+
+
+
+
+
