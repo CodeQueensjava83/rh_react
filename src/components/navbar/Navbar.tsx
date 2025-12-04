@@ -53,7 +53,7 @@ export default function Navbar() {
             {/* SUBMENU MOBILE */}
             {submenuOpen && (
               <ul className="flex flex-col md:hidden bg-white text-gray-700 mt-2 rounded-lg shadow z-50">
-                <Link to="/all" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
+                <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
                 <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamento</Link>
                 <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuário</Link>
               </ul>
