@@ -25,7 +25,7 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
-              <Route path="/colaborador/all" element={<ListaColaboradores />} />
+              <Route path="/colaboradores/all" element={<ListaColaboradores />} />
               <Route path="/cardcolaboradores" element={<FormColaboradores />} />
               <Route path="/editarcolaboradores/:id" element={<FormColaboradores />} />
               <Route path="/deletarcolaboradores/:id" element={<DeletarColaboradores />} />
