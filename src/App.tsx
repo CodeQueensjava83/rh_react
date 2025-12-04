@@ -25,11 +25,7 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
-<<<<<<< HEAD
-              <Route path="/colaboradores" element={<ListaColaboradores />} />
-=======
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />
->>>>>>> d9d9f6d235243f6499ff8acec27737dc686396f1
               <Route path="/cardcolaboradores" element={<FormColaboradores />} />
               <Route path="/editarcolaboradores/:id" element={<FormColaboradores />} />
               <Route path="/deletarcolaboradores/:id" element={<DeletarColaboradores />} />
