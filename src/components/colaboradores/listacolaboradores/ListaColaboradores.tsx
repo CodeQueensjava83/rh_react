@@ -14,7 +14,13 @@ function ListaColaboradores() {
   const [colaboradores, setColaboradores] = useState<Colaboradores[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+<<<<<<< HEAD
   // Redireciona se não tiver token
+=======
+  const { usuario } = useContext(AuthContext);
+  const token = usuario.token
+
+>>>>>>> d9d9f6d235243f6499ff8acec27737dc686396f1
   useEffect(() => {
     if (!token) {
       alert("Você precisa estar logado!");
@@ -27,6 +33,7 @@ function ListaColaboradores() {
     if (token) buscarColaboradores();
   }, [token]);
 
+<<<<<<< HEAD
   async function buscarColaboradores() {
     try {
       setIsLoading(true);
@@ -59,6 +66,14 @@ function ListaColaboradores() {
       }
     } finally {
       setIsLoading(false);
+=======
+     async function buscarColaboradores() {
+            setIsLoading(false)
+
+            await listar('/colaboradores/all', setColaboradores, {
+                headers: { Authorization: token}
+            })
+>>>>>>> d9d9f6d235243f6499ff8acec27737dc686396f1
     }
   }
 
