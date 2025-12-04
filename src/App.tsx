@@ -1,9 +1,11 @@
-import Home from './pages/home/Home';
+import ChatFAQ from "./components/ChatFAQ";
 
-export default function App() {
+function App() {
   return (
-    <Home />
-  )
+    <div className="App">
+      <ChatFAQ />
+    </div>
+  );
 }
 
 export default App;
