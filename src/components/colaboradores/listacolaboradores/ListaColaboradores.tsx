@@ -14,7 +14,7 @@ function ListarColaboradores() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { usuario, hadleLogout } = useContext(AuthContext);
+  const { usuario } = useContext(AuthContext);
   const token = usuario.token
 
   useEffect(() => {
@@ -29,20 +29,11 @@ function ListarColaboradores() {
   }, [colaboradores.length])
 
      async function buscarColaboradores() {
-        try {
-
-            setIsLoading(true)
+            setIsLoading(false)
 
             await listar('/colaboradores/all', setColaboradores, {
                 headers: { Authorization: token}
             })
-        } catch (error: any) {
-            if (error.toString().includes('401')) {
-                handleLogout()
-            }
-        }finally {
-            setIsLoading(false)
-        }
     }
 
   return (
