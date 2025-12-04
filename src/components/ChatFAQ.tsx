@@ -4,13 +4,10 @@ function ChatFAQ() {
   const [mensagem, setMensagem] = useState<string>("");
   const [historico, setHistorico] = useState<{ tipo: "user" | "bot"; texto: string }[]>([]);
 
-  // Nome do chat vindo do .env (se não existir, usa padrão)
   const chatName = import.meta.env.VITE_CHAT_NAME || "Chat RH Digital";
 
   const enviarPergunta = async () => {
     const apiKey = import.meta.env.VITE_TEXTCORTEX_API_KEY;
-
-    // adiciona a mensagem do usuário ao histórico
     setHistorico((prev) => [...prev, { tipo: "user", texto: mensagem }]);
 
     try {
@@ -28,7 +25,7 @@ function ChatFAQ() {
           source_lang: "pt",
           target_lang: "pt-br",
           temperature: 0.3,
-          text: `Você é um sistema de RH digital de uma empresa.
+          text: `Você é um sistema de RH digital de uma empresa, nós te chamamos de Nex.
 Responda dúvidas dos colaboradores de forma curta, objetiva e clara.
 Sempre explique:
 1. O passo que o colaborador deve seguir dentro do sistema (ex.: acessar menu de férias, clicar em solicitar).
@@ -38,14 +35,8 @@ Pergunta: ${mensagem}`
       });
 
       const data = await resp.json();
-      console.log("Resposta da API:", data);
-
-      if (data?.data?.outputs?.length > 0) {
-        const respostaBot = data.data.outputs[0].text;
-        setHistorico((prev) => [...prev, { tipo: "bot", texto: respostaBot }]);
-      } else {
-        setHistorico((prev) => [...prev, { tipo: "bot", texto: "Não consegui gerar resposta." }]);
-      }
+      const respostaBot = data?.data?.outputs?.[0]?.text || "Não consegui gerar resposta.";
+      setHistorico((prev) => [...prev, { tipo: "bot", texto: respostaBot }]);
     } catch (error) {
       console.error("Erro inesperado:", error);
       setHistorico((prev) => [...prev, { tipo: "bot", texto: "Erro inesperado ao tentar se conectar à API." }]);
@@ -55,19 +46,17 @@ Pergunta: ${mensagem}`
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      {/* Nome do chat configurável */}
-      <h1 className="text-2xl font-bold mb-4">{chatName}</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4">
+      <h1 className="text-2xl font-bold mb-4 text-orange-600">{chatName}</h1>
 
-      {/* Área de mensagens estilo chat */}
       <div className="flex flex-col w-full max-w-md space-y-2 mb-4">
         {historico.map((msg, index) => (
           <div
             key={index}
             className={`p-2 rounded-lg max-w-[80%] ${
               msg.tipo === "user"
-                ? "bg-blue-500 text-white self-end"
-                : "bg-gray-200 text-black self-start"
+                ? "bg-sky-800 text-white self-end"
+                : "bg-teal-600 text-white self-start"
             }`}
           >
             {msg.texto}
@@ -75,17 +64,16 @@ Pergunta: ${mensagem}`
         ))}
       </div>
 
-      {/* Campo de entrada */}
       <div className="flex w-full max-w-md space-x-2">
         <input
-          className="border p-2 flex-1 rounded"
+          className="border border-gray-300 p-2 flex-1 rounded text-gray-700"
           value={mensagem}
           onChange={(e) => setMensagem(e.target.value)}
           placeholder="Digite sua dúvida..."
         />
         <button
           onClick={enviarPergunta}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-yellow-500 text-white px-4 py-2 rounded hover:text-orange-500"
         >
           Enviar
         </button>
