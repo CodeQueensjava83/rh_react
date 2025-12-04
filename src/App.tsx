@@ -21,8 +21,8 @@ function App() {
           <div className="flex-1 w-full pt-16 bg-slate-200">
             <Routes>
               {/* Rota pública */}
-              <Route path="/" element={<Login />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Login />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />

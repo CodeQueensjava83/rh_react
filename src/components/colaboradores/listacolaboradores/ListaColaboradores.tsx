@@ -11,39 +11,39 @@ function ListarColaboradores() {
   const navigate = useNavigate();
 
   const [colaboradores, setColaboradores] = useState<Colaboradores[]>([]);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { usuario, hadleLogout } = useContext(AuthContext);
-  const token = usuario.token
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
   useEffect(() => {
     if (token === '') {
-      alert('Você precisa estar logado para acessar essa página.')
-      navigate('/')
+      alert('Você precisa estar logado para acessar essa página.');
+      navigate('/');
     }
-  }, [token])
+  }, [token]);
 
+  // CORREÇÃO: carregar apenas 1 vez
   useEffect(() => {
-    buscarColaboradores()
-  }, [colaboradores.length])
+    buscarColaboradores();
+  }, []);
 
-     async function buscarColaboradores() {
-        try {
+  async function buscarColaboradores() {
+    try {
+      setIsLoading(true);
 
-            setIsLoading(true)
+      await listar('/colaboradores/all', setColaboradores, {
+        headers: { Authorization: token }
+      });
 
-            await listar('/colaboradores/all', setColaboradores, {
-                headers: { Authorization: token}
-            })
-        } catch (error: any) {
-            if (error.toString().includes('401')) {
-                handleLogout()
-            }
-        }finally {
-            setIsLoading(false)
-        }
+    } catch (error: any) {
+      if (error.toString().includes('401')) {
+        handleLogout();
+      }
+    } finally {
+      setIsLoading(false);
     }
+  }
 
   return (
     <>
@@ -60,6 +60,7 @@ function ListarColaboradores() {
 
       <div className="flex justify-center w-full bg-slate-200 min-h-[70vh] overflow-x-hidden">
         <div className="box-border w-full px-4 py-4 mt-8 max-w-8xl sm:px-6 md:px-8 lg:px-12 md:py-6">
+
           {!isLoading && colaboradores.length === 0 && (
             <span className="text-3xl text-center my-8">
               Nenhum Colaborador foi encontrado!
@@ -67,19 +68,20 @@ function ListarColaboradores() {
           )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
-            {colaboradores.map((colaboradores) => (
+            {colaboradores.map((colab) => (
               <CardColaboradores
-                key={colaboradores.id}
-                colaboradores={colaboradores}
-                onCalcular={() => console.log("Calcular salário", colaboradores)}
-                onHolerite={() => console.log("Gerar holerite", colaboradores)}
+                key={colab.id}
+                colaboradores={colab}
+                onCalcular={() => console.log("Calcular salário", colab)}
+                onHolerite={() => console.log("Gerar holerite", colab)}
               />
             ))}
           </div>
+
         </div>
       </div>
     </>
   )
 }
 
-export default ListarColaboradores
+export default ListarColaboradores;
