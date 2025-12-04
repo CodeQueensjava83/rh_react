@@ -1,40 +1,57 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import type Departamentos from "../../../modals/Departamentos";
 import type Colaboradores from "../../../modals/Colaboradores";
 import { atualizar, cadastrar, listar } from "../../../services/Service";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function FormColaboradores() {
-  const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
 
-  const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-  // Lista de departamentos
-  const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
-  // Departamento selecionado
-  const [departamentoSelecionado, setDepartamentoSelecionado] = useState<Departamentos | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [colaborador, setColaborador] = useState<Colaboradores>({} as Colaboradores);
+    const { id } = useParams<{ id: string }>();
 
-  async function buscarColaboradorPorId(id: string) {
-    try {
-      const data = await listar(`/colaboradores/${id}`);
-      setColaborador(data);
-      setDepartamentoSelecionado(data.departamento); // já vincula o departamento
-    } catch {
-      alert("Erro ao listar colaborador!");
+    const { usuario } = useContext(AuthContext);
+    const token = usuario.token;
+
+
+    const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
+    const [departamento, setDepartamento] = useState<Departamento>({
+    id: 0,
+    descricao: "",
+  })
+
+
+    const [colaborador, setColaborador] = useState<Colaboradores>(
+    {} as Colaboradores
+    );
+
+    async function buscarColaboradorPorId(id: string) {
+      try {
+        const data = await listar(`/colaboradores/${id}`, undefined, {
+          headers: { Authorization: token }
+        });
+        setColaborador(data);
+        setDepartamento(data.departamento);
+      } catch {
+        alert("Erro ao listar colaborador!");
+      }
     }
-  }
 
-  async function buscarDepartamentos() {
+async function buscarDepartamentos() {
+
     try {
-      const data = await listar(`/departamentos`);
-      setDepartamentos(data);
+
+      await listar(`/departamentos`, setDepartamentos)
+
     } catch {
-      alert("Erro ao listar todos os departamentos!");
+      alert('Erro ao listar todos os departamentos!')
+
     }
+
   }
 
   useEffect(() => {
@@ -54,7 +71,7 @@ function FormColaboradores() {
     setColaborador({
       ...colaborador,
       [name]: valor,
-      departamento: departamentoSelecionado ?? colaborador.departamento,
+      departamento: departamento ?? colaborador.departamento
     });
   }
 
@@ -66,20 +83,42 @@ function FormColaboradores() {
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      if (id) {
-        await atualizar(`/colaboradores/all`, colaborador);
+    if (id !== undefined) {
+      try { 
+        await atualizar(`/colaboradores/${id}`, colaborador, {
+          headers: {
+            Authorization: token,
+          },
+        });
         alert("Colaborador atualizado com sucesso!");
-      } else {
-        await cadastrar(`/colaboradores/all`, colaborador);
-        alert("Colaborador cadastrado com sucesso!");
+
+      } catch (error: any) {
+          if (error.toString().includes("401")) {
+            handLogout()
+          } else { 
+              alert("Erro ao atualizar colaborador!");
+          }
       }
-      retornar();
-    } catch {
-      alert("Erro ao salvar colaborador!");
-    } finally {
-      setIsLoading(false);
-    }
+
+    } else {
+      try {
+        await cadastrar("/colaboradores", colaborador, {
+          headers: {
+            Authorization: token,
+          },
+        });
+        alert("Colaborador cadastrado com sucesso!");
+
+      } catch (error: any) {
+          if (error.toString().includes("401")) {
+            handLogout() 
+          } else { 
+              alert("Erro ao cadastrar colaborador!");
+          }
+        }
+      }
+    setIsLoading(false);
+    retornar();
   }
 
   return (
@@ -191,35 +230,48 @@ function FormColaboradores() {
 
         {/* Departamento */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="departamento">Departamento</label>
+          <label htmlFor="departamento" className="font-medium text-slate-800">
+            Departamento
+          </label>
+
           <select
+            name="departamento"
             id="departamento"
-            value={departamentoSelecionado?.id ?? ""}
-            onChange={(e) => {
-              const dep = departamentos.find((d) => d.id === Number(e.target.value));
-              setDepartamentoSelecionado(dep || null);
-              setColaborador({ ...colaborador, departamento: dep || null });
-            }}
-            className="p-2 border rounded-lg"
+            className="p-2 text-base bg-white border rounded-lg border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            value={departamento.id !== 0 ? departamento.id : ""}
+            onChange={(e) => buscarDepartamentoPorId(e.currentTarget.value)}
           >
             <option value="" disabled>
               Selecione um Departamento
             </option>
-            {departamentos.map((dep) => (
-              <option key={dep.id} value={dep.id}>
-                {dep.descricao}
+            {departamentos.map((departamento) => (
+              <option key={departamento.id} value={departamento.id}>
+                {departamento.descricao}
               </option>
             ))}
+
           </select>
         </div>
 
+
         {/* Botões */}
         <div className="flex gap-2 pt-2">
-          <button type="button" onClick={retornar} className="flex-1 py-2 bg-neutral-500 text-white rounded">
+          <button
+            type="button"
+            onClick={retornar}
+            className="flex-1 py-2 bg-neutral-500 text-white rounded"
+          >
             Voltar
           </button>
-          <button type="submit" className="flex-1 py-2 bg-amber-500 text-white rounded">
-            {isLoading ? <ClipLoader color="#ffffff" size={24} /> : <span>{id ? "Atualizar" : "Cadastrar"}</span>}
+          <button
+            type="submit"
+            className="flex-1 py-2 bg-amber-500 text-white rounded"
+          >
+            {isLoading ? (
+              <ClipLoader color="#ffffff" size={24} />
+            ) : (
+              <span>{id ? "Atualizar" : "Cadastrar"}</span>
+            )}
           </button>
         </div>
       </form>
@@ -228,3 +280,7 @@ function FormColaboradores() {
 }
 
 export default FormColaboradores;
+      function handLogout() {
+        throw new Error("Function not implemented.");
+      }
+

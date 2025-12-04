@@ -11,6 +11,7 @@ import ListaColaboradores from './components/colaboradores/listacolaboradores/Li
 import FormColaboradores from './components/colaboradores/formcolaboradores/FormColaboradores';
 import DeletarColaboradores from './components/colaboradores/deletarcolaboradores/DeletarColaboradores';
 import { AuthProvider } from './contexts/AuthContext';
+import Cadastro from './pages/cadastro/Cadastro';
 
 function App() {
   return (
@@ -27,12 +28,13 @@ function App() {
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />
               <Route path="/cardcolaboradores" element={<FormColaboradores />} />
-              <Route path="/editarcolaboradores/:id" element={<FormColaboradores />} />
+              <Route path="/editarcolaborador/:id" element={<FormColaboradores />} />
               <Route path="/deletarcolaboradores/:id" element={<DeletarColaboradores />} />
               <Route path="/departamentos" element={<ListaDepartamentos />} />
               <Route path="/carddepartamentos" element={<FormDepartamentos />} />
               <Route path="/editardepartamentos/:id" element={<FormDepartamentos />} />
               <Route path="/deletardepartamentos/:id" element={<DeletarDepartamentos />} />
+              <Route path="/cadastro" element={<Cadastro />} />
             </Routes>
           </div>
         </div>

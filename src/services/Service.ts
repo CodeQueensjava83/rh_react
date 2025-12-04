@@ -28,10 +28,10 @@ export const cadastrar = async (url: string, dados: Object, setDados: Function, 
   setDados(resposta.data);
 };
 
-export const atualizar = async (url: string, dados: Object, setDados: Function, config = {}) => {
-  const resposta = await api.put(url, dados, config);
-  setDados(resposta.data);
-};
+export const atualizar = async (url: string, dados: Object, setDados: Function, header: Object) => {
+    const resposta = await api.put(url, dados, header)
+    setDados(resposta.data)
+}
 
 export const deletar = async (url: string, config = {}) => {
   await api.delete(url, config);
