@@ -1,114 +1,79 @@
-// src/services/Service.ts
 import axios, { type AxiosRequestConfig } from "axios";
 
 export const api = axios.create({
-  baseURL: "https://gestaorh-529f.onrender.com",
+  baseURL: "https://gestaorh-529f.onrender.com/",
 });
 
-// ✅ Interceptor para adicionar token automaticamente
-api.interceptors.request.use((config) => {
-  const savedUser = localStorage.getItem("usuario");
+// ==================== AUTH ====================
 
-  if (savedUser) {
-    const { token } = JSON.parse(savedUser);
-
-    if (token) {
-      // Se sua API exigir Bearer prefixado, troque para:
-      // config.headers.Authorization = `Bearer ${token}`;
-      config.headers.Authorization = token;
-    }
-  }
-
-  return config;
-});
-
-type Config = AxiosRequestConfig | undefined;
-
-// GET
-export const listar = async (url: string, config: Config = undefined) => {
-  try {
-    const resposta = await api.get(url, config);
-    return resposta.data;
-  } catch (error) {
-    console.error("[Service][listar] Erro:", error);
-    throw error;
-  }
-};
-
-// POST
-export const cadastrar = async (url: string, dados: Object, config: Config = undefined) => {
-  try {
-    const resposta = await api.post(url, dados, config);
-    return resposta.data;
-  } catch (error) {
-    console.error("[Service][cadastrar] Erro:", error);
-    throw error;
-  }
-};
-
-// PUT
-export const atualizar = async (url: string, dados: Object, config: Config = undefined) => {
-  try {
-    const resposta = await api.put(url, dados, config);
-    return resposta.data;
-  } catch (error) {
-    console.error("[Service][atualizar] Erro:", error);
-    throw error;
-  }
-};
-
-// DELETE
-export const deletar = async (url: string, config: Config = undefined) => {
-  try {
-    const resposta = await api.delete(url, config);
-    return resposta.data;
-  } catch (error) {
-    console.error("[Service][deletar] Erro:", error);
-    throw error;
-  }
-};
-
-// LOGIN
-export const login = async (url: string, dados: Object, config: Config = undefined) => {
-  try {
-    const resposta = await api.post(url, dados, config);
-    return resposta.data;
-  } catch (error) {
-    console.error("[Service][login] Erro:", error);
-    throw error;
-  }
-};
-
-// Cadastro usuário
-export const cadastrarUsuario = async (
+export const cadastrarUsuario = async <T>(
   url: string,
-  dados: Object,
-  config: Config = undefined
-) => {
-  try {
-    const resposta = await api.post(url, dados, config);
-    return resposta.data;
-  } catch (error) {
-    console.error("[Service][cadastrarUsuario] Erro:", error);
-    throw error;
-  }
+  dados: object,
+  setDados?: (data: T) => void
+): Promise<T> => {
+  const resposta = await api.post<T>(url, dados);
+  if (setDados) setDados(resposta.data);
+  return resposta.data;
 };
 
-// Cálculo salário
-export const calcularSalario = async (
+export const login = async <T>(
+  url: string,
+  dados: object,
+  setDados?: (data: T) => void
+): Promise<T> => {
+  const resposta = await api.post<T>(url, dados);
+  if (setDados) setDados(resposta.data);
+  return resposta.data;
+};
+
+// ==================== CRUD ====================
+
+export const listar = async <T>(
+  url: string,
+  setDados?: (data: T) => void,
+  config: AxiosRequestConfig = {}
+): Promise<T> => {
+  const resposta = await api.get<T>(url, config);
+  if (setDados) setDados(resposta.data);
+  return resposta.data;
+};
+
+export const cadastrar = async <T>(
+  url: string,
+  dados: object,
+  setDados?: (data: T) => void,
+  config: AxiosRequestConfig = {}
+): Promise<T> => {
+  const resposta = await api.post<T>(url, dados, config);
+  if (setDados) setDados(resposta.data);
+  return resposta.data;
+};
+
+export const atualizar = async <T>(
+  url: string,
+  dados: object,
+  setDados?: (data: T) => void,
+  config: AxiosRequestConfig = {}
+): Promise<T> => {
+  const resposta = await api.put<T>(url, dados, config);
+  if (setDados) setDados(resposta.data);
+  return resposta.data;
+};
+
+export const deletar = async (
+  url: string,
+  config: AxiosRequestConfig = {}
+): Promise<void> => {
+  await api.delete(url, config);
+};
+
+// ==================== SALÁRIO ====================
+
+export const calcularSalario = async <T>(
   url: string,
   dadosSalario: any,
-  config: Config = undefined
-) => {
-  try {
-    const resposta = await api.post(url, dadosSalario, config);
-    return resposta.data;
-  } catch (error) {
-    console.error("[Service][calcularSalario] Erro:", error);
-    throw error;
-  }
+  config: AxiosRequestConfig = {}
+): Promise<T> => {
+  const resposta = await api.post<T>(url, dadosSalario, config);
+  return resposta.data;
 };
-
-
-
-

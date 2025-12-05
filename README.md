@@ -1,73 +1,118 @@
-# React + TypeScript + Vite
+# NexumRH - Frontend 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<br />
 
-Currently, two official plugins are available:
+<div align="center">
+    <img src="# Nome do Projeto - Frontend 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<br />
 
-## React Compiler
+<div align="center">
+    <img src="https://ik.imagekit.io/codequeens/rh_logo.jpg?updatedAt=1761765415212" title="source: imgur.com" width="50%"/>
+</div>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<br /><br />
 
-## Expanding the ESLint configuration
+## 1. Descrição
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+O NexumRH é um sistema de gestão de recursos humanos projetado para organizar, acompanhar e potencializar os processos internos de empresas.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+A aplicação é estruturada em três entidades principais:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Usuário: representa os responsáveis pela gestão do sistema (administradores e gestores), com diferentes níveis de acesso e funções específicas, garantindo segurança e controle das operações.
+2. Colaborador: centraliza os dados de funcionários da organização, reunindo informações de identificação, cargo, setor e demais dados relevantes para acompanhamento de sua trajetória profissional.
+3. Departamento: organiza a estrutura interna da empresa, permitindo o cadastro e gerenciamento de setores, facilitando a vinculação de colaboradores e possibilitando uma visão clara da distribuição de recursos humanos.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+------
+
+## 2. Recursos
+
+A API da NexumRH foi desenvolvida em Java, utilizando o framework Spring, e segue os princípios da Arquitetura MVC e REST. Ela disponibiliza endpoints para o gerenciamento dos recursos Colaboradores, Departamentos e Usuário, com testes de CRUD (Create, Read, Update e Delete) realizados por meio do Insomnia.
+
+2.1. Principais Funcionalidades
+1. Centralização das informações de colaboradores, setores e gestores em uma única plataforma.
+2. Gestão eficiente de usuários, com perfis diferenciados de acesso e responsabilidade.
+3. Organização hierárquica clara, por meio do relacionamento entre colaboradores e departamentos.
+4. Controle completo do ciclo de vida do colaborador, desde o cadastro até movimentações internas.
+5. Possibilidade de ampliação de funções extras, como: geração de relatórios de desempenho, faltas/ausências (taxas de absenteísmo), métricas para apoiar decisões estratégicas e integração via API com sistemas externos de folha de pagamento ou controle de ponto.
+
+------
+
+## 3. Protótipo e Capturas de Tela
+
+
+
+*Adicione print da tela inicial e/ou o link do protótipo no Figma (se houver)*
+
+<div align="center">
+    <img src="mudar" title="source: imgur.com" width="50%"/>
+</div>
+
+<br />
+
+<a href="https://imgur.com/vK8ulM5"><img src="https://i.imgur.com/vK8ulM5.png" title="source: imgur.com" width="3%"/></a> [Protótipo desenvolvido no Figma](link para o Figma do Projeto)
+
+------
+
+## 4. Tecnologias
+
+| Item                         | Descrição  |
+| ---------------------------- | ---------- |
+| **Servidor**                 | Node JS    |
+| **Linguagem de programação** | TypeScript |
+| **Biblioteca**               | React JS   |
+| **Build**                    | Vite       |
+| **Framework de Estilização** | Tailwind   |
+
+---
+
+## 5. Pré-requisitos
+
+Antes de iniciar, certifique-se de ter as seguintes ferramentas instaladas:
+
+- [Node.js](https://nodejs.org/) (v16+)
+- [yarn](https://yarnpkg.com/)
+- API NestJS API NestJS ([Repositório da API](link do repositório da api))
+
+---
+
+## 6. Configuração e Execução
+
+1. Clone o repositório do Projeto
+2. Instale as dependências: `yarn`
+3. Clone o repositório do Projeto Backend: [Link](link do repositório do Backend)
+4. Siga as instruções de **Configuração e Execução** descritas no README do Projeto Backend
+5. Adicione o endereço de execução do projeto na variável de ambiente **VITE_API_URL**, no projeto React
+6. Execute o Projeto React: `yarn dev`
+7. A aplicação React estará disponível no endereço: `http://localhost:5173`
+
+---
+
+## 7. Estrutura do Projeto
+
+```plaintext
+src/
+│
+├── components/       # Componentes reutilizáveis
+├── contexts/         # Gerenciamento de estado global (ex: autenticação)
+├── models/           # Estrutura de dados da aplicação-
+├── pages/            # Páginas da aplicação
+├── services/         # Integração com a API (requisições HTTP)
+├── utils/            # Funções auxiliares (alerts)
+└── App.tsx           # Componente principal da aplicação
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 8. Como Contribuir
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Faça um fork do projeto
+2. Crie uma branch com a sua feature (`git checkout -b minha-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Faça um push para a branch (`git push origin minha-feature`)
+5. Abra um Pull Request" title="source: imgur.com" width="50%"/>
+</div>
+
+
+<br /><br />
+

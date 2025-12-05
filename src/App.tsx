@@ -7,36 +7,41 @@ import Navbar from './components/navbar/Navbar';
 import QuemSomos from './pages/quemsomos/QuemSomos';
 import OQueFazemos from './pages/oquefazemos/OQueFazemos';
 import Login from './pages/login/Login';
-import ListaColaboradores from './components/colaboradores/listacolaboradores/ListaColaboradores';
 import FormColaboradores from './components/colaboradores/formcolaboradores/FormColaboradores';
 import DeletarColaboradores from './components/colaboradores/deletarcolaboradores/DeletarColaboradores';
 import { AuthProvider } from './contexts/AuthContext';
+import Cadastro from './pages/cadastro/Cadastro';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <AuthProvider>
+      <ToastContainer />
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <div className="flex-1 w-full pt-16 bg-slate-200">
             <Routes>
-              {/* Rota pública */}
-              <Route path="/" element={<Login />} />
+              {/* Rotas públicas */}
               <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Login />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
-<<<<<<< HEAD
-              <Route path="/colaboradores" element={<ListaColaboradores />} />
-=======
-              <Route path="/colaboradores/all" element={<ListaColaboradores />} />
->>>>>>> d9d9f6d235243f6499ff8acec27737dc686396f1
-              <Route path="/cardcolaboradores" element={<FormColaboradores />} />
-              <Route path="/editarcolaboradores/:id" element={<FormColaboradores />} />
-              <Route path="/deletarcolaboradores/:id" element={<DeletarColaboradores />} />
+
+              {/* Colaboradores */}
+              <Route path="/colaboradores/all" element={<DeletarColaboradores />} />
+              <Route path="/colaboradores/novo" element={<FormColaboradores />} />
+              <Route path="/colaboradores/editar/:id" element={<FormColaboradores />} />
+              <Route path="/colaboradores/deletar/:id" element={<DeletarColaboradores />} />
+
+              {/* Departamentos */}
               <Route path="/departamentos" element={<ListaDepartamentos />} />
-              <Route path="/carddepartamentos" element={<FormDepartamentos />} />
-              <Route path="/editardepartamentos/:id" element={<FormDepartamentos />} />
-              <Route path="/deletardepartamentos/:id" element={<DeletarDepartamentos />} />
+              <Route path="/departamentos/novo" element={<FormDepartamentos />} />
+              <Route path="/departamentos/editar/:id" element={<FormDepartamentos />} />
+              <Route path="/departamentos/deletar/:id" element={<DeletarDepartamentos />} />
+
+              {/* Cadastro */}
+              <Route path="/cadastro" element={<Cadastro />} />
             </Routes>
           </div>
         </div>
