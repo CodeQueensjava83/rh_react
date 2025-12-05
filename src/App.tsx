@@ -7,16 +7,15 @@ import Navbar from './components/navbar/Navbar';
 import QuemSomos from './pages/quemsomos/QuemSomos';
 import OQueFazemos from './pages/oquefazemos/OQueFazemos';
 import Login from './pages/login/Login';
+import ListaColaboradores from './components/colaboradores/listacolaboradores/ListaColaboradores';
 import FormColaboradores from './components/colaboradores/formcolaboradores/FormColaboradores';
 import DeletarColaboradores from './components/colaboradores/deletarcolaboradores/DeletarColaboradores';
 import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
-import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <AuthProvider>
-      <ToastContainer />
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
@@ -29,7 +28,7 @@ function App() {
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
 
               {/* Colaboradores */}
-              <Route path="/colaboradores/all" element={<DeletarColaboradores />} />
+              <Route path="/colaboradores/all" element={<ListaColaboradores />} />
               <Route path="/colaboradores/novo" element={<FormColaboradores />} />
               <Route path="/colaboradores/editar/:id" element={<FormColaboradores />} />
               <Route path="/colaboradores/deletar/:id" element={<DeletarColaboradores />} />

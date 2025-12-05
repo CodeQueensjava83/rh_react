@@ -16,7 +16,6 @@ function Home() {
             -z-10
           "
                     src="https://ik.imagekit.io/codequeens/NEXUM%20RH/videoHome?updatedAt=1764781533437"
-                    type="video/mp4"
                 />
 
                 {/* EFEITO NO VÍDEO - BLUR*/}
