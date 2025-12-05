@@ -19,7 +19,7 @@ export const login = async (url: string, dados: Object, setDados: Function) => {
 // ==================== CRUD ====================
 
 export const listar = async (url: string, setDados: Function, config = {}) => {
-  const resposta = await api.get(url, config); // ✅ AGORA ENVIA TOKEN
+  const resposta = await api.get(url, config);
   setDados(resposta.data);
 };
 

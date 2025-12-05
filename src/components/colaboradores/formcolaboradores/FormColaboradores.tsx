@@ -1,64 +1,95 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent, useContext } from "react";
+import { 
+  useEffect, 
+  useState, 
+  type ChangeEvent, 
+  type FormEvent, 
+  useContext 
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
+
 import type Departamentos from "../../../modals/Departamentos";
 import type Colaboradores from "../../../modals/Colaboradores";
 import { atualizar, cadastrar, listar } from "../../../services/Service";
+
 import { AuthContext } from "../../../contexts/AuthContext";
 
 function FormColaboradores() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
-    const { id } = useParams<{ id: string }>();
+  const [isLoading, setIsLoading] = useState(false);
 
-    const { usuario } = useContext(AuthContext);
-    const token = usuario.token;
-
-
-    const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
-    const [departamento, setDepartamento] = useState<Departamento>({
+  const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
+  const [departamento, setDepartamento] = useState<Departamentos>({
     id: 0,
     descricao: "",
-  })
+  });
 
-
-    const [colaborador, setColaborador] = useState<Colaboradores>(
+  const [colaborador, setColaborador] = useState<Colaboradores>(
     {} as Colaboradores
-    );
+  );
 
-    async function buscarColaboradorPorId(id: string) {
-      try {
-        const data = await listar(`/colaboradores/${id}`, undefined, {
-          headers: { Authorization: token }
-        });
-        setColaborador(data);
-        setDepartamento(data.departamento);
-      } catch {
-        alert("Erro ao listar colaborador!");
-      }
-    }
-
-async function buscarDepartamentos() {
-
+  // ----------------------------
+  // Buscar colaborador por ID
+  // ----------------------------
+  async function buscarColaboradorPorId(id: string) {
     try {
+      const data = await listar(`/colaboradores/${id}`, undefined, {
+        headers: { Authorization: token },
+      });
 
-      await listar(`/departamentos`, setDepartamentos)
-
+      setColaborador(data);
+      setDepartamento(data.departamento);
     } catch {
-      alert('Erro ao listar todos os departamentos!')
-
+      alert("Erro ao listar colaborador!");
     }
-
   }
 
+  // ----------------------------
+  // Buscar departamentos
+  // ----------------------------
+  async function buscarDepartamentos() {
+    try {
+      await listar(`/departamentos`, setDepartamentos, {
+        headers: { Authorization: token },
+      });
+    } catch {
+      alert("Erro ao listar departamentos!");
+    }
+  }
+
+  // ----------------------------
+  // Buscar departamento por ID (select)
+  // ----------------------------
+  async function buscarDepartamentoPorId(id: string) {
+    try {
+      const data = await listar(`/departamentos/${id}`, undefined, {
+        headers: { Authorization: token },
+      });
+
+      setDepartamento(data);
+      setColaborador({ ...colaborador, departamento: data });
+    } catch {
+      alert("Erro ao buscar departamento!");
+    }
+  }
+
+  // ----------------------------
+  // Load inicial
+  // ----------------------------
   useEffect(() => {
     buscarDepartamentos();
     if (id) buscarColaboradorPorId(id);
   }, [id]);
 
+  // ----------------------------
+  // Atualizar estado genérico
+  // ----------------------------
   function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
     const { type, value, name } = e.target;
     let valor: string | number = value;
@@ -71,7 +102,7 @@ async function buscarDepartamentos() {
     setColaborador({
       ...colaborador,
       [name]: valor,
-      departamento: departamento ?? colaborador.departamento
+      departamento: departamento,
     });
   }
 
@@ -79,48 +110,42 @@ async function buscarDepartamentos() {
     navigate("/colaboradores/all");
   }
 
+  // ----------------------------
+  // Submit
+  // ----------------------------
   async function gerarNovoColaborador(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
 
-    if (id !== undefined) {
-      try { 
+    try {
+      if (id) {
+        // atualizar
         await atualizar(`/colaboradores/${id}`, colaborador, {
-          headers: {
-            Authorization: token,
-          },
+          headers: { Authorization: token },
         });
         alert("Colaborador atualizado com sucesso!");
-
-      } catch (error: any) {
-          if (error.toString().includes("401")) {
-            handLogout()
-          } else { 
-              alert("Erro ao atualizar colaborador!");
-          }
-      }
-
-    } else {
-      try {
-        await cadastrar("/colaboradores", colaborador, {
-          headers: {
-            Authorization: token,
-          },
+      } else {
+        // cadastrar
+        await cadastrar(`/colaboradores`, colaborador, {
+          headers: { Authorization: token },
         });
         alert("Colaborador cadastrado com sucesso!");
-
-      } catch (error: any) {
-          if (error.toString().includes("401")) {
-            handLogout() 
-          } else { 
-              alert("Erro ao cadastrar colaborador!");
-          }
-        }
       }
+    } catch (error: any) {
+      if (String(error).includes("401")) {
+        handleLogout();
+      } else {
+        alert("Erro ao salvar colaborador!");
+      }
+    }
+
     setIsLoading(false);
     retornar();
   }
 
+  // -------------------------------------
+  // JSX
+  // -------------------------------------
   return (
     <div className="container flex flex-col items-center justify-start mx-auto bg-slate-100 min-h-[70vh] px-4 py-12">
       <h1 className="mb-8 text-3xl font-semibold text-center md:text-4xl text-amber-500">
@@ -131,14 +156,14 @@ async function buscarDepartamentos() {
         className="flex flex-col w-full max-w-xl gap-4 p-4 bg-white border shadow-sm rounded-xl border-slate-200"
         onSubmit={gerarNovoColaborador}
       >
-        {/* Nome e Dependentes */}
+        {/* Nome + Dependentes */}
         <div className="flex gap-4">
           <div className="flex flex-col gap-2 w-3/4">
             <label htmlFor="nome">Nome</label>
             <input
               type="text"
-              name="nome"
               id="nome"
+              name="nome"
               required
               value={colaborador.nome || ""}
               onChange={atualizarEstado}
@@ -150,8 +175,8 @@ async function buscarDepartamentos() {
             <label htmlFor="dependentes">Dependentes</label>
             <input
               type="number"
-              name="dependentes"
               id="dependentes"
+              name="dependentes"
               required
               value={colaborador.dependentes ?? 0}
               onChange={atualizarEstado}
@@ -166,8 +191,8 @@ async function buscarDepartamentos() {
             <label htmlFor="cargo">Cargo</label>
             <input
               type="text"
-              name="cargo"
               id="cargo"
+              name="cargo"
               value={colaborador.cargo || ""}
               onChange={atualizarEstado}
               className="p-2 border rounded-lg"
@@ -179,8 +204,8 @@ async function buscarDepartamentos() {
             <input
               type="number"
               step=".01"
-              name="salario"
               id="salario"
+              name="salario"
               required
               value={colaborador.salario ?? 0}
               onChange={atualizarEstado}
@@ -192,8 +217,8 @@ async function buscarDepartamentos() {
             <label htmlFor="horasMensais">Horas Mensais</label>
             <input
               type="number"
-              name="horasMensais"
               id="horasMensais"
+              name="horasMensais"
               value={colaborador.horasMensais ?? 0}
               onChange={atualizarEstado}
               className="p-2 border rounded-lg text-center"
@@ -206,8 +231,8 @@ async function buscarDepartamentos() {
           <label htmlFor="email">E-mail</label>
           <input
             type="text"
-            name="email"
             id="email"
+            name="email"
             value={colaborador.email || ""}
             onChange={atualizarEstado}
             className="p-2 border rounded-lg"
@@ -219,8 +244,8 @@ async function buscarDepartamentos() {
           <label htmlFor="foto">Foto</label>
           <input
             type="text"
-            name="foto"
             id="foto"
+            name="foto"
             required
             value={colaborador.foto || ""}
             onChange={atualizarEstado}
@@ -230,29 +255,25 @@ async function buscarDepartamentos() {
 
         {/* Departamento */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="departamento" className="font-medium text-slate-800">
-            Departamento
-          </label>
-
+          <label htmlFor="departamento">Departamento</label>
           <select
-            name="departamento"
             id="departamento"
-            className="p-2 text-base bg-white border rounded-lg border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-400"
+            name="departamento"
             value={departamento.id !== 0 ? departamento.id : ""}
-            onChange={(e) => buscarDepartamentoPorId(e.currentTarget.value)}
+            onChange={(e) => buscarDepartamentoPorId(e.target.value)}
+            className="p-2 border rounded-lg"
           >
             <option value="" disabled>
-              Selecione um Departamento
+              Selecione um departamento
             </option>
-            {departamentos.map((departamento) => (
-              <option key={departamento.id} value={departamento.id}>
-                {departamento.descricao}
+
+            {departamentos.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.descricao}
               </option>
             ))}
-
           </select>
         </div>
-
 
         {/* Botões */}
         <div className="flex gap-2 pt-2">
@@ -263,6 +284,7 @@ async function buscarDepartamentos() {
           >
             Voltar
           </button>
+
           <button
             type="submit"
             className="flex-1 py-2 bg-amber-500 text-white rounded"
@@ -280,7 +302,3 @@ async function buscarDepartamentos() {
 }
 
 export default FormColaboradores;
-      function handLogout() {
-        throw new Error("Function not implemented.");
-      }
-
