@@ -223,19 +223,7 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         />
       </div>
 
-      {/* Foto */}
-      <div className="flex flex-col gap-2">
-        <label htmlFor="foto">Foto</label>
-        <input
-          type="text"
-          id="foto"
-          name="foto"
-          required
-          value={colaborador.foto || ""}
-          onChange={atualizarEstado}
-          className="p-2 border rounded-lg"
-        />
-      </div>
+
 
       {/* Departamento */}
       <div className="flex flex-col gap-2">
