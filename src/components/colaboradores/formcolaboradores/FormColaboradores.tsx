@@ -39,7 +39,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     {} as Colaboradores
   );
 
-  // Buscar colaborador por ID
   async function buscarColaboradorPorId(colabId: string) {
     try {
       const data = await listar<Colaboradores>(`/colaboradores/${colabId}`, undefined, {
@@ -55,7 +54,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     }
   }
 
-  // Buscar departamentos
   async function buscarDepartamentos() {
     try {
       await listar<Departamentos[]>(`/departamentos`, setDepartamentos, {
@@ -66,7 +64,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     }
   }
 
-  // Buscar departamento selecionado no <select>
   async function buscarDepartamentoPorId(deptId: string) {
     try {
       const data = await listar<Departamentos>(`/departamentos/${deptId}`, undefined, {
@@ -121,16 +118,13 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         alert("Colaborador cadastrado com sucesso!");
       }
 
-      // Se tiver onSuccess (modal), chama ela
       if (onSuccess) {
         onSuccess(colaboradorSalvo);
       }
 
-      // Se tiver onClose (modal), fecha o modal
       if (onClose) {
         onClose();
       } else {
-        // Se não tiver (rota), navega de volta
         navigate("/colaboradores/all");
       }
 
@@ -145,7 +139,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     }
   }
 
-  // Se não tiver onClose, significa que está sendo usado como página, então adiciona wrapper
   const formContent = (
     <form
       className="flex flex-col w-full max-w-xl gap-4 p-4 bg-white border shadow-sm rounded-xl border-slate-200"
@@ -241,20 +234,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         />
       </div>
 
-      {/* Foto */}
-      <div className="flex flex-col gap-2">
-        <label htmlFor="foto">Foto</label>
-        <input
-          type="text"
-          id="foto"
-          name="foto"
-          required
-          value={colaborador.foto || ""}
-          onChange={atualizarEstado}
-          className="p-2 border rounded-lg"
-        />
-      </div>
-
       {/* Departamento */}
       <div className="flex flex-col gap-2">
         <label htmlFor="departamento">Departamento</label>
@@ -277,22 +256,24 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         </select>
       </div>
 
+      {/* 
+        INÍCIO DAS MUDANÇAS NOS BOTÕES
+      */}
       {/* Botões */}
       <div className="flex pt-2 gap-2">
-        {/* Adiciona botão Cancelar apenas quando usado como rota */}
-        {!onClose && (
-          <button
-            type="button"
-            onClick={() => navigate("/colaboradores/all")}
-            className="w-1/2 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
-          >
-            Cancelar
-          </button>
-        )}
+        {/* Botão de Cancelar/Voltar */}
+        <button
+          type="button"
+          onClick={onClose ? onClose : () => navigate("/colaboradores/all")}
+          className="w-1/2 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+        >
+          {onClose ? "Cancelar" : "Voltar"}
+        </button>
 
+        {/* Botão de Submit */}
         <button
           type="submit"
-          className={`${!onClose ? 'w-1/2' : 'w-full'} py-2 bg-amber-500 text-white rounded hover:bg-amber-600`}
+          className="w-1/2 py-2 bg-amber-500 text-white rounded hover:bg-amber-600"
         >
           {isLoading ? (
             <ClipLoader color="#ffffff" size={24} />
@@ -301,10 +282,13 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
           )}
         </button>
       </div>
+      {/* 
+        FIM DAS MUDANÇAS NOS BOTÕES
+      */}
     </form>
   );
 
-  // Se não tiver onClose (usado como página), adiciona wrapper centralizado
+  // Renderização como página (sem modal)
   if (!onClose) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4 bg-gray-200">
@@ -313,8 +297,23 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     );
   }
 
-  // Se tiver onClose (usado como modal), retorna só o form
-  return formContent;
+  // Renderização como modal
+  // 
+  // INÍCIO DA MUDANÇA: Adiciona um container relativo e o botão "X" de fechar
+  return (
+    <div className="relative">
+      <button
+        onClick={onClose}
+        className="absolute -top-10 right-0 text-gray-500 hover:text-gray-700 text-3xl font-bold leading-none"
+        aria-label="Fechar"
+      >
+        &times;
+      </button>
+      {formContent}
+    </div>
+  );
+  // 
+  // FIM DA MUDANÇA
 }
 
 export default FormColaboradores;

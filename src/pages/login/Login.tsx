@@ -84,7 +84,7 @@ function Login() {
       </form>
 
       <div
-        className="bg-[url('https://i.imgur.com/ZZFAmzo.jpg')] lg:block hidden bg-no-repeat 
+        className="bg-[url('https://ik.imagekit.io/codequeens/rh_logo.jpg?updatedAt=1761765415212')] lg:block hidden bg-no-repeat 
         w-full min-h-screen bg-cover bg-center"
       ></div>
     </div>
