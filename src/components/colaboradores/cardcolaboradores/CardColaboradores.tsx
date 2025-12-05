@@ -38,8 +38,8 @@ function CardColaboradores({ colaboradores, onCalcular, onHolerite }: CardColabo
 
         {/* Foto */}
         <div className="flex justify-start -mt-4">
-          <div className="w-32 h-32 rounded-full border-4 border-white shadow-md overflow-hidden bg-slate-100">
-            <img src={colaboradores.foto} alt="Foto do colaborador" className="w-full h-full object-cover" />
+          <div className="w-20 h-20 rounded-full border-4 border-white shadow-md overflow-hidden bg-slate-100">
+            <img src='https://ik.imagekit.io/codequeens/NEXUM%20RH/user.png' alt="Foto do colaborador" className="w-full h-full object-cover" />
           </div>
         </div>
 

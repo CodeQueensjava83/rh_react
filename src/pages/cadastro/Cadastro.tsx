@@ -108,7 +108,7 @@ function Cadastro() {
         </div>
 
         <div className="flex flex-row justify-between w-full gap-8">
-          <button type="button" onClick={() => navigate("/home")} className="w-1/2 py-2 rounded bg-amber-400 text-white hover:bg-amber-600">Cancelar</button>
+          <button type="button" onClick={() => navigate("/home")} className="w-1/2 py-2 rounded bg-orange-400 text-white hover:bg-orange-600">Cancelar</button>
           <button type="submit" className="w-1/2 py-2 rounded bg-neutral-400 text-white hover:bg-neutral-600 flex justify-center">
             {isLoading ? <ClipLoader color="#ffffff" size={20} /> : "Cadastrar"}
           </button>

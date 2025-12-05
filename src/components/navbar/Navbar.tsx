@@ -80,15 +80,15 @@ export default function Navbar() {
             </Link>
           </li>
 
-          {/* LOGIN */}
+          {/* PERFIL */}
           <li>
             <Link
-              to="/login"
+              to="/perfil"
               className="flex items-center gap-2 border border-white rounded-full px-5 py-2 
                         hover:bg-white hover:text-orange-500 transition font-semibold
                         text-lg md:text-xl"
             >
-              <User size={22} weight="bold" /> Login
+              <User size={22} weight="bold" /> Perfil
             </Link>
           </li>
         </ul>

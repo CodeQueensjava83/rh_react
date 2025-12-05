@@ -12,6 +12,7 @@ import FormColaboradores from './components/colaboradores/formcolaboradores/Form
 import DeletarColaboradores from './components/colaboradores/deletarcolaboradores/DeletarColaboradores';
 import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
+import Perfil from './pages/perfil/Perfil';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
+              <Route path="/perfil" element={<Perfil />} />
 
               {/* Colaboradores */}
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />

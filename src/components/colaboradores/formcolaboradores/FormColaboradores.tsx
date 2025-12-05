@@ -1,23 +1,28 @@
-import { 
-  useEffect, 
-  useState, 
-  type ChangeEvent, 
-  type FormEvent, 
-  useContext 
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  useContext
 } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
+import { useParams, useNavigate } from "react-router-dom";
 
 import type Departamentos from "../../../modals/Departamentos";
 import type Colaboradores from "../../../modals/Colaboradores";
-import { atualizar, cadastrar, listar } from "../../../services/Service";
 
+import { atualizar, cadastrar, listar } from "../../../services/Service";
 import { AuthContext } from "../../../contexts/AuthContext";
 
-function FormColaboradores() {
-  const navigate = useNavigate();
+interface FormColaboradoresProps {
+  onClose?: () => void;
+  onSuccess?: (colaborador: Colaboradores) => void;
+}
 
-  const { id } = useParams<{ id: string }>();
+function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
+
+  const { id } = useParams<{ id?: string }>();
+  const navigate = useNavigate();
 
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
@@ -34,28 +39,26 @@ function FormColaboradores() {
     {} as Colaboradores
   );
 
-  // ----------------------------
   // Buscar colaborador por ID
-  // ----------------------------
-  async function buscarColaboradorPorId(id: string) {
+  async function buscarColaboradorPorId(colabId: string) {
     try {
-      const data = await listar(`/colaboradores/${id}`, undefined, {
+      const data = await listar<Colaboradores>(`/colaboradores/${colabId}`, undefined, {
         headers: { Authorization: token },
       });
 
       setColaborador(data);
-      setDepartamento(data.departamento);
+      if (data.departamento) {
+        setDepartamento(data.departamento);
+      }
     } catch {
       alert("Erro ao listar colaborador!");
     }
   }
 
-  // ----------------------------
   // Buscar departamentos
-  // ----------------------------
   async function buscarDepartamentos() {
     try {
-      await listar(`/departamentos`, setDepartamentos, {
+      await listar<Departamentos[]>(`/departamentos`, setDepartamentos, {
         headers: { Authorization: token },
       });
     } catch {
@@ -63,12 +66,10 @@ function FormColaboradores() {
     }
   }
 
-  // ----------------------------
-  // Buscar departamento por ID (select)
-  // ----------------------------
-  async function buscarDepartamentoPorId(id: string) {
+  // Buscar departamento selecionado no <select>
+  async function buscarDepartamentoPorId(deptId: string) {
     try {
-      const data = await listar(`/departamentos/${id}`, undefined, {
+      const data = await listar<Departamentos>(`/departamentos/${deptId}`, undefined, {
         headers: { Authorization: token },
       });
 
@@ -79,17 +80,11 @@ function FormColaboradores() {
     }
   }
 
-  // ----------------------------
-  // Load inicial
-  // ----------------------------
   useEffect(() => {
     buscarDepartamentos();
     if (id) buscarColaboradorPorId(id);
   }, [id]);
 
-  // ----------------------------
-  // Atualizar estado genérico
-  // ----------------------------
   function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
     const { type, value, name } = e.target;
     let valor: string | number = value;
@@ -106,199 +101,220 @@ function FormColaboradores() {
     });
   }
 
-  function retornar() {
-    navigate("/colaboradores/all");
-  }
-
-  // ----------------------------
   // Submit
-  // ----------------------------
   async function gerarNovoColaborador(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      let colaboradorSalvo: Colaboradores;
+
       if (id) {
-        // atualizar
-        await atualizar(`/colaboradores/${id}`, colaborador, {
+        colaboradorSalvo = await atualizar<Colaboradores>(`/colaboradores/${id}`, colaborador, undefined, {
           headers: { Authorization: token },
         });
         alert("Colaborador atualizado com sucesso!");
       } else {
-        // cadastrar
-        await cadastrar(`/colaboradores`, colaborador, {
+        colaboradorSalvo = await cadastrar<Colaboradores>(`/colaboradores`, colaborador, undefined, {
           headers: { Authorization: token },
         });
         alert("Colaborador cadastrado com sucesso!");
       }
+
+      // Se tiver onSuccess (modal), chama ela
+      if (onSuccess) {
+        onSuccess(colaboradorSalvo);
+      }
+
+      // Se tiver onClose (modal), fecha o modal
+      if (onClose) {
+        onClose();
+      } else {
+        // Se não tiver (rota), navega de volta
+        navigate("/colaboradores/all");
+      }
+
     } catch (error: any) {
       if (String(error).includes("401")) {
         handleLogout();
       } else {
         alert("Erro ao salvar colaborador!");
       }
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
-    retornar();
   }
 
-  // -------------------------------------
-  // JSX
-  // -------------------------------------
-  return (
-    <div className="container flex flex-col items-center justify-start mx-auto bg-slate-100 min-h-[70vh] px-4 py-12">
-      <h1 className="mb-8 text-3xl font-semibold text-center md:text-4xl text-amber-500">
-        {id ? "Editar" : "Cadastrar"} Colaborador
-      </h1>
+  // Se não tiver onClose, significa que está sendo usado como página, então adiciona wrapper
+  const formContent = (
+    <form
+      className="flex flex-col w-full max-w-xl gap-4 p-4 bg-white border shadow-sm rounded-xl border-slate-200"
+      onSubmit={gerarNovoColaborador}
+    >
+      {/* Título quando usado como página */}
+      {!onClose && (
+        <h1 className="text-2xl font-bold text-center text-orange-400 mb-4">
+          {id ? "Editar Colaborador" : "Novo Colaborador"}
+        </h1>
+      )}
 
-      <form
-        className="flex flex-col w-full max-w-xl gap-4 p-4 bg-white border shadow-sm rounded-xl border-slate-200"
-        onSubmit={gerarNovoColaborador}
-      >
-        {/* Nome + Dependentes */}
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-2 w-3/4">
-            <label htmlFor="nome">Nome</label>
-            <input
-              type="text"
-              id="nome"
-              name="nome"
-              required
-              value={colaborador.nome || ""}
-              onChange={atualizarEstado}
-              className="p-2 border rounded-lg"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2 w-1/4">
-            <label htmlFor="dependentes">Dependentes</label>
-            <input
-              type="number"
-              id="dependentes"
-              name="dependentes"
-              required
-              value={colaborador.dependentes ?? 0}
-              onChange={atualizarEstado}
-              className="p-2 border rounded-lg text-center"
-            />
-          </div>
-        </div>
-
-        {/* Cargo, Salário, Horas */}
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-2 w-1/2">
-            <label htmlFor="cargo">Cargo</label>
-            <input
-              type="text"
-              id="cargo"
-              name="cargo"
-              value={colaborador.cargo || ""}
-              onChange={atualizarEstado}
-              className="p-2 border rounded-lg"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2 w-30">
-            <label htmlFor="salario">Salário</label>
-            <input
-              type="number"
-              step=".01"
-              id="salario"
-              name="salario"
-              required
-              value={colaborador.salario ?? 0}
-              onChange={atualizarEstado}
-              className="p-2 border rounded-lg text-center"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2 w-30">
-            <label htmlFor="horasMensais">Horas Mensais</label>
-            <input
-              type="number"
-              id="horasMensais"
-              name="horasMensais"
-              value={colaborador.horasMensais ?? 0}
-              onChange={atualizarEstado}
-              className="p-2 border rounded-lg text-center"
-            />
-          </div>
-        </div>
-
-        {/* Email */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="email">E-mail</label>
+      {/* Nome + Dependentes */}
+      <div className="flex gap-4">
+        <div className="flex flex-col gap-2 w-3/4">
+          <label htmlFor="nome">Nome</label>
           <input
             type="text"
-            id="email"
-            name="email"
-            value={colaborador.email || ""}
-            onChange={atualizarEstado}
-            className="p-2 border rounded-lg"
-          />
-        </div>
-
-        {/* Foto */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="foto">Foto</label>
-          <input
-            type="text"
-            id="foto"
-            name="foto"
+            id="nome"
+            name="nome"
             required
-            value={colaborador.foto || ""}
+            value={colaborador.nome || ""}
             onChange={atualizarEstado}
             className="p-2 border rounded-lg"
           />
         </div>
 
-        {/* Departamento */}
-        <div className="flex flex-col gap-2">
-          <label htmlFor="departamento">Departamento</label>
-          <select
-            id="departamento"
-            name="departamento"
-            value={departamento.id !== 0 ? departamento.id : ""}
-            onChange={(e) => buscarDepartamentoPorId(e.target.value)}
-            className="p-2 border rounded-lg"
-          >
-            <option value="" disabled>
-              Selecione um departamento
-            </option>
+        <div className="flex flex-col gap-2 w-1/4">
+          <label htmlFor="dependentes">Dependentes</label>
+          <input
+            type="number"
+            id="dependentes"
+            name="dependentes"
+            required
+            value={colaborador.dependentes ?? 0}
+            onChange={atualizarEstado}
+            className="p-2 border rounded-lg text-center"
+          />
+        </div>
+      </div>
 
-            {departamentos.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.descricao}
-              </option>
-            ))}
-          </select>
+      {/* Cargo, Salário, Horas */}
+      <div className="flex gap-4">
+        <div className="flex flex-col gap-2 w-1/2">
+          <label htmlFor="cargo">Cargo</label>
+          <input
+            type="text"
+            id="cargo"
+            name="cargo"
+            value={colaborador.cargo || ""}
+            onChange={atualizarEstado}
+            className="p-2 border rounded-lg"
+          />
         </div>
 
-        {/* Botões */}
-        <div className="flex gap-2 pt-2">
+        <div className="flex flex-col gap-2 w-30">
+          <label htmlFor="salario">Salário</label>
+          <input
+            type="number"
+            step=".01"
+            id="salario"
+            name="salario"
+            required
+            value={colaborador.salario ?? 0}
+            onChange={atualizarEstado}
+            className="p-2 border rounded-lg text-center"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2 w-30">
+          <label htmlFor="horasMensais">Horas Mensais</label>
+          <input
+            type="number"
+            id="horasMensais"
+            name="horasMensais"
+            value={colaborador.horasMensais ?? 0}
+            onChange={atualizarEstado}
+            className="p-2 border rounded-lg text-center"
+          />
+        </div>
+      </div>
+
+      {/* Email */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email">E-mail</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          value={colaborador.email || ""}
+          onChange={atualizarEstado}
+          className="p-2 border rounded-lg"
+        />
+      </div>
+
+      {/* Foto */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="foto">Foto</label>
+        <input
+          type="text"
+          id="foto"
+          name="foto"
+          required
+          value={colaborador.foto || ""}
+          onChange={atualizarEstado}
+          className="p-2 border rounded-lg"
+        />
+      </div>
+
+      {/* Departamento */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="departamento">Departamento</label>
+        <select
+          id="departamento"
+          name="departamento"
+          value={departamento.id !== 0 ? departamento.id : ""}
+          onChange={(e) => buscarDepartamentoPorId(e.target.value)}
+          className="p-2 border rounded-lg"
+        >
+          <option value="" disabled>
+            Selecione um departamento
+          </option>
+
+          {departamentos.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.descricao}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Botões */}
+      <div className="flex pt-2 gap-2">
+        {/* Adiciona botão Cancelar apenas quando usado como rota */}
+        {!onClose && (
           <button
             type="button"
-            onClick={retornar}
-            className="flex-1 py-2 bg-neutral-500 text-white rounded"
+            onClick={() => navigate("/colaboradores/all")}
+            className="w-1/2 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
           >
-            Voltar
+            Cancelar
           </button>
+        )}
 
-          <button
-            type="submit"
-            className="flex-1 py-2 bg-amber-500 text-white rounded"
-          >
-            {isLoading ? (
-              <ClipLoader color="#ffffff" size={24} />
-            ) : (
-              <span>{id ? "Atualizar" : "Cadastrar"}</span>
-            )}
-          </button>
-        </div>
-      </form>
-    </div>
+        <button
+          type="submit"
+          className={`${!onClose ? 'w-1/2' : 'w-full'} py-2 bg-amber-500 text-white rounded hover:bg-amber-600`}
+        >
+          {isLoading ? (
+            <ClipLoader color="#ffffff" size={24} />
+          ) : (
+            <span>{id ? "Atualizar" : "Cadastrar"}</span>
+          )}
+        </button>
+      </div>
+    </form>
   );
+
+  // Se não tiver onClose (usado como página), adiciona wrapper centralizado
+  if (!onClose) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4 bg-gray-200">
+        {formContent}
+      </div>
+    );
+  }
+
+  // Se tiver onClose (usado como modal), retorna só o form
+  return formContent;
 }
 
 export default FormColaboradores;
