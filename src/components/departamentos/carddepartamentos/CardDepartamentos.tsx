@@ -22,13 +22,13 @@ const CardDepartamentos: React.FC<CardDepartamentosProps> = ({ departamentos }) 
 
       <div className="flex">
         <Link
-          to={`/editardepartamento/${departamentos.id}`}
+          to={`/departamentos/editar/${departamentos.id}`}
           className="w-full text-black bg-amber-300 hover:bg-amber-200 flex items-center justify-center py-2"
         >
           <button>Editar</button>
         </Link>
         <Link
-          to={`/deletardepartamento/${departamentos.id}`}
+          to={`/departamentos/deletar/${departamentos.id}`}
           className="text-black bg-amber-500 hover:bg-amber-400 w-full flex items-center justify-center"
         >
           <button>Deletar</button>

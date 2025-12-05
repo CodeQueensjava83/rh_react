@@ -28,10 +28,10 @@ function CardColaboradores({ colaboradores, onCalcular, onHolerite }: CardColabo
       <div className="relative flex flex-col justify-between overflow-hidden bg-white rounded-lg border border-slate-200 hover:border-amber-400 transition-all duration-300 hover:shadow-lg w-80 mx-auto p-6 space-y-4">
         {/* Ícones de editar/deletar */}
         <div className="absolute top-3 right-3 flex gap-2 z-10">
-          <Link to={`/editarcolaborador/${colaboradores.id}`}>
+          <Link to={`/colaboradores/editar/${colaboradores.id}`}>
             <PencilIcon size={22} className="text-slate-400 hover:text-amber-600 transition-colors cursor-pointer" />
           </Link>
-          <Link to={`/deletarcolaborador/${colaboradores.id}`}>
+          <Link to={`/colaboradores/deletar/${colaboradores.id}`}>
             <TrashIcon size={22} className="text-slate-400 hover:text-red-600 transition-colors cursor-pointer" />
           </Link>
         </div>

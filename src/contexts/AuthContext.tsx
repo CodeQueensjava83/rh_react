@@ -1,5 +1,4 @@
-import { createContext, type ReactNode, useState, useEffect } from "react";
-import { ToastAlerta } from "../utils/ToastAlert";
+import { createContext, useState, type ReactNode } from "react";
 import type UsuarioLogin from "../modals/UsuarioLogin";
 import { login } from "../services/Service";
 
@@ -23,50 +22,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     usuario: "",
     senha: "",
     foto: "",
-    token: ""
+    token: "",
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Evita autologin com token inválido ou vazio
-  useEffect(() => {
-    const savedUser = localStorage.getItem("usuario");
-
-    if (savedUser) {
-      const usuarioObj = JSON.parse(savedUser);
-
-      if (usuarioObj.token && usuarioObj.token.trim() !== "") {
-        setUsuario(usuarioObj);
-      } else {
-        localStorage.removeItem("usuario");
-      }
-    }
-  }, []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleLogin(usuarioLogin: UsuarioLogin) {
     setIsLoading(true);
-
     try {
-      const resposta = await login("/usuarios/logar", usuarioLogin);
-
-      const usuarioFinal: UsuarioLogin = {
-        id: resposta.usuario.id,
-        nome: resposta.usuario.nome,
-        usuario: resposta.usuario.usuario,
-        senha: "",
-        foto: resposta.usuario.foto,
-        token: resposta.token,
-      };
-
-      setUsuario(usuarioFinal);
-      localStorage.setItem("usuario", JSON.stringify(usuarioFinal));
-
-      ToastAlerta("Usuário autenticado!", "sucesso");
-
+      await login("/usuarios/logar", usuarioLogin, setUsuario);
+      alert("Usuário autenticado com sucesso!");
     } catch (error) {
-      ToastAlerta("Erro ao autenticar usuário!", "erro");
+      console.error("Erro ao autenticar:", error);
+      alert("Os dados do usuário estão inconsistentes!");
     }
-
     setIsLoading(false);
   }
 
@@ -77,9 +46,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       usuario: "",
       senha: "",
       foto: "",
-      token: ""
+      token: "",
     });
-    localStorage.removeItem("usuario");
   }
 
   return (
@@ -88,7 +56,3 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
-
-
-
-

@@ -38,6 +38,9 @@ export const listar = async <T>(
   return resposta.data;
 };
 
+// Adicionar função buscar (alias para listar)
+export const buscar = listar;
+
 export const cadastrar = async <T>(
   url: string,
   dados: object,

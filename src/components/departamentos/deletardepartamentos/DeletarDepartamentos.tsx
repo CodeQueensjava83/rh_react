@@ -1,25 +1,40 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import type Departamentos from "../../../modals/Departamentos";
-import { deletar, listar } from "../../../services/Service";
+import type Departamento from "../../../modals/Departamentos";
+import { deletar, buscar } from "../../../services/Service";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function DeletarDepartamentos() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: string }>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [departamento, setDepartamento] = useState<Departamentos | null>(null);
+  const [departamento, setDepartamento] = useState<Departamento | null>(null);
+
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
   async function buscarPorId(id: string) {
     try {
-      const data = await listar(`/departamentos/${id}`);
-      setDepartamento(data);
-    } catch (error) {
-      alert("Departamento não encontrado!");
-      console.error(error);
+      await buscar(`/departamentos/${id}`, setDepartamento, {
+        headers: { Authorization: token },
+      });
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      } else {
+        alert("Departamento não encontrado!");
+      }
     }
   }
+
+  useEffect(() => {
+    if (token === "") {
+      alert("Você precisa estar logado!");
+      navigate("/");
+    }
+  }, [token]);
 
   useEffect(() => {
     if (id) buscarPorId(id);
@@ -28,12 +43,17 @@ function DeletarDepartamentos() {
   async function deletarDepartamento() {
     setIsLoading(true);
     try {
-      await deletar(`/departamentos/${id}`);
+      await deletar(`/departamentos/${id}`, {
+        headers: { Authorization: token },
+      });
       alert("Departamento apagado com sucesso!");
       retornar();
-    } catch (error) {
-      alert("Erro ao apagar o departamento!");
-      console.error(error);
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      } else {
+        alert("Erro ao apagar o departamento!");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -55,10 +75,12 @@ function DeletarDepartamentos() {
         <header className="px-4 py-2 text-lg font-semibold text-black md:px-6 bg-orange-400 uppercase md:text-2xl">
           Departamento
         </header>
-        {departamento && (
+        {departamento ? (
           <p className="h-full p-4 text-xl bg-white md:p-8 md:text-3xl">
             {departamento.descricao}
           </p>
+        ) : (
+          <p className="p-8 text-center">Carregando departamento...</p>
         )}
         <div className="flex flex-row">
           <button
@@ -70,7 +92,7 @@ function DeletarDepartamentos() {
           <button
             className="flex items-center justify-center w-full text-base bg-green-200 text-white hover:bg-green-400 md:text-lg"
             onClick={deletarDepartamento}
-            disabled={isLoading}
+            disabled={isLoading || !departamento}
           >
             {isLoading ? <ClipLoader color="#ffffff" size={24} /> : <span>Sim</span>}
           </button>

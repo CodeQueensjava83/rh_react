@@ -19,10 +19,10 @@ function Home() {
                 />
 
                 {/* EFEITO NO VÍDEO - BLUR*/}
-                <div className="absolute inset-0 backdrop-blur-[1px] md:backdrop-blur-[2px]"></div>
+                <div className="absolute inset-0 backdrop-blur-[1px] md:backdrop-blur-[2px] pointer-events-none"></div>
 
                 {/* EFEITO NO VÍDEO - CONTRASTE */}
-                <div className="absolute inset-0 bg-black/40"></div>
+                <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
 
                 {/* TEXTO VÍDEO */}
                 <div className="relative z-10 text-center px-4 max-w-3xl text-white flex flex-col gap-6 animate-fadein">
@@ -132,7 +132,7 @@ function Home() {
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
                             <p className="text-xl italic text-orange-600 mb-4">
-                                “O Nexum é simples e intuitivo, eficiente para a nossa rotina em RH.”
+                                "O Nexum é simples e intuitivo, eficiente para a nossa rotina em RH."
                             </p>
                             <span className="text-gray-700">— Adriana Leite, Coordenadora de RH</span>
                         </div>
@@ -142,7 +142,7 @@ function Home() {
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
                             <p className="text-xl italic text-orange-600 mb-4">
-                                “Ferramentas eficientes e suporte incrível!”
+                                "Ferramentas eficientes e suporte incrível!"
                             </p>
                             <span className="text-gray-700">— Aimeé Ferreira, Diretora de Talentos</span>
                         </div>
@@ -152,7 +152,7 @@ function Home() {
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
                             <p className="text-xl italic text-orange-600 mb-4">
-                                “A plataforma trouxe organização e clareza aos nossos processos.”
+                                "A plataforma trouxe organização e clareza aos nossos processos."
                             </p>
                             <span className="text-gray-700">— Rafael Queiroz, Diretor Executivo</span>
                         </div>
@@ -162,7 +162,7 @@ function Home() {
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
                             <p className="text-xl italic text-orange-600 mb-4">
-                                “Finalmente conseguimos centralizar todas as informações do time.”
+                                "Finalmente conseguimos centralizar todas as informações do time."
                             </p>
                             <span className="text-gray-700">— Camila Evangelista, Diretora de Empregabilidade</span>
                         </div>

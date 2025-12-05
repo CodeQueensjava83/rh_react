@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import type Colaboradores from "../../../modals/Colaboradores";
-import { deletar, listar } from "../../../services/Service";
+import { deletar, buscar } from "../../../services/Service";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function DeletarColaboradores() {
   const navigate = useNavigate();
@@ -11,32 +12,53 @@ function DeletarColaboradores() {
   const [isLoading, setIsLoading] = useState(false);
   const [colaborador, setColaborador] = useState<Colaboradores | null>(null);
 
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
+
   async function buscarColaboradorPorId(id: string) {
     try {
-      const data = await listar(`/colaboradores/${id}`);
-      setColaborador(data);
-    } catch {
-      alert("Erro ao listar colaborador!");
+      await buscar(`/colaboradores/${id}`, setColaborador, {
+        headers: { Authorization: token },
+      });
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      } else {
+        alert("Erro ao buscar colaborador!");
+      }
+      navigate("/colaboradores/all");
     }
   }
+
+  useEffect(() => {
+    if (token === "") {
+      alert("Você precisa estar logado!");
+      navigate("/");
+    }
+  }, [token]);
 
   useEffect(() => {
     if (id) buscarColaboradorPorId(id);
   }, [id]);
 
   function retornar() {
-    navigate("/all");
+    navigate("/colaboradores/all");
   }
 
   async function deletarColaborador() {
     setIsLoading(true);
     try {
-      await deletar(`/colaboradores/${id}`);
+      await deletar(`/colaboradores/${id}`, {
+        headers: { Authorization: token },
+      });
       alert("Colaborador deletado com sucesso!");
       retornar();
-    } catch (error) {
-      console.error("Erro ao deletar colaborador:", error);
-      alert("Erro ao deletar colaborador!");
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      } else {
+        alert("Erro ao deletar colaborador!");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +75,7 @@ function DeletarColaboradores() {
       </p>
 
       <div className="border flex flex-col rounded-2xl overflow-hidden">
-        {colaborador && (
+        {colaborador ? (
           <>
             <header className="py-2 px-6 bg-amber-500 text-white font-bold text-2xl">
               {colaborador.nome}
@@ -62,6 +84,8 @@ function DeletarColaboradores() {
               {colaborador.nome}
             </p>
           </>
+        ) : (
+          <p className="p-8 text-center">Carregando colaborador...</p>
         )}
 
         <div className="flex">
@@ -75,7 +99,7 @@ function DeletarColaboradores() {
           <button
             className="flex items-center justify-center w-full py-2 bg-green-300 hover:bg-green-500 text-white"
             onClick={deletarColaborador}
-            disabled={isLoading}
+            disabled={isLoading || !colaborador}
           >
             {isLoading ? <ClipLoader color="#ffffff" size={24} /> : "Sim"}
           </button>
@@ -86,5 +110,3 @@ function DeletarColaboradores() {
 }
 
 export default DeletarColaboradores;
-
-
