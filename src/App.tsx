@@ -21,19 +21,25 @@ function App() {
           <Navbar />
           <div className="flex-1 w-full pt-16 bg-slate-200">
             <Routes>
-              {/* Rota pública */}
+              {/* Rotas públicas */}
               <Route path="/home" element={<Home />} />
               <Route path="/" element={<Login />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
+
+              {/* Colaboradores */}
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />
-              <Route path="/cardcolaboradores" element={<FormColaboradores />} />
-              <Route path="/editarcolaborador/:id" element={<FormColaboradores />} />
-              <Route path="/deletarcolaboradores/:id" element={<DeletarColaboradores />} />
+              <Route path="/colaboradores/novo" element={<FormColaboradores />} />
+              <Route path="/colaboradores/editar/:id" element={<FormColaboradores />} />
+              <Route path="/colaboradores/deletar/:id" element={<DeletarColaboradores />} />
+
+              {/* Departamentos */}
               <Route path="/departamentos" element={<ListaDepartamentos />} />
-              <Route path="/carddepartamentos" element={<FormDepartamentos />} />
-              <Route path="/editardepartamentos/:id" element={<FormDepartamentos />} />
-              <Route path="/deletardepartamentos/:id" element={<DeletarDepartamentos />} />
+              <Route path="/departamentos/novo" element={<FormDepartamentos />} />
+              <Route path="/departamentos/editar/:id" element={<FormDepartamentos />} />
+              <Route path="/departamentos/deletar/:id" element={<DeletarDepartamentos />} />
+
+              {/* Cadastro */}
               <Route path="/cadastro" element={<Cadastro />} />
             </Routes>
           </div>

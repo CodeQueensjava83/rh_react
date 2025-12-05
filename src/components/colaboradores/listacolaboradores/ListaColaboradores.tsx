@@ -5,16 +5,28 @@ import CardColaboradores from '../cardcolaboradores/CardColaboradores';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { listar } from '../../../services/Service';
+import FormColaboradores from '../formcolaboradores/FormColaboradores';
 
 function ListarColaboradores() {
 
   const navigate = useNavigate();
 
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [colaboradores, setColaboradores] = useState<Colaboradores[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
+
+  function adicionarOuAtualizazarColaborador(novoColaborador: Colaboradores) {
+    setColaboradores((prev) => {
+    const existe = prev.find((o) => o.id === novoColaborador.id);
+    if (existe) {
+      return prev.map((o) => (o.id === novoColaborador.id ? novoColaborador : o));
+    }
+    return [...prev, novoColaborador];  
+  });
+}
 
   useEffect(() => {
     if (token === '') {
@@ -47,6 +59,27 @@ function ListarColaboradores() {
 
   return (
     <>
+    <div className="flex justify-center my-4">
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="bg-amber-500 hover:bg-amber-800 text-white px-4 py-2 rounded"
+        >
+          Novo Colaborador
+        </button>
+      </div>
+
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-1/2">
+            <h2 className="text-2xl mb-4">Cadastrar Colaborador</h2>
+            <FormColaboradores
+              onClose={() => setShowCreateModal(false)}
+              onSuccess={adicionarOuAtualizazarColaborador}
+            />
+          </div>
+        </div>
+      )}
+      
       {isLoading && (
         <div className="flex justify-center w-full my-8">
           <ClipLoader
