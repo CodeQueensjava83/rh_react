@@ -15,10 +15,11 @@ function Login() {
   const { usuario, handleLogin, isLoading } = useContext(AuthContext);
 
   useEffect(() => {
-    if (usuario && usuario.token) {
+    // Só navega se o usuário tiver token REAL e a autenticação já tiver terminado
+    if (!isLoading && usuario?.token) {
       navigate("/home");
     }
-  }, [usuario]);
+  }, [usuario, isLoading]);
 
   function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
     setUsuarioLogin({
@@ -92,3 +93,4 @@ function Login() {
 }
 
 export default Login;
+

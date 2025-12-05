@@ -1,5 +1,5 @@
 import type Departamentos from "./Departamentos";
-import type Usuario from "./Usuario";
+import type UsuarioLogin from "./UsuarioLogin";
 
 export default interface Colaboradores {
     id: number;
@@ -11,5 +11,5 @@ export default interface Colaboradores {
     horasMensais: number;
     dependentes: number;
     departamento: Departamentos | null;
-    usuario: Usuario | null;
+    usuario: UsuarioLogin | null;
 }
