@@ -12,6 +12,10 @@ import FormColaboradores from './components/colaboradores/formcolaboradores/Form
 import DeletarColaboradores from './components/colaboradores/deletarcolaboradores/DeletarColaboradores';
 import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
+import ChatFAQ from './components/ChatFAQ';
+import Footer from './components/footer/Footer';
+
+
 
 function App() {
   return (
@@ -19,13 +23,14 @@ function App() {
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <div className="flex-1 w-full pt-16 bg-slate-200">
+          <div className="flex-1 w-full pt-16 bg-transparent">
             <Routes>
               {/* Rotas públicas */}
               <Route path="/home" element={<Home />} />
               <Route path="/" element={<Login />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
+              <Route path="/chat" element={<ChatFAQ />} />
 
               {/* Colaboradores */}
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />
@@ -43,6 +48,7 @@ function App() {
               <Route path="/cadastro" element={<Cadastro />} />
             </Routes>
           </div>
+                <Footer />
         </div>
       </BrowserRouter>
     </AuthProvider>
