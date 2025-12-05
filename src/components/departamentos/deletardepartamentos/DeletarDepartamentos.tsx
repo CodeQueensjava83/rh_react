@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import type Departamentos from "../../../modals/Departamentos";
+import type Departamento from "../../../modals/Departamentos";
 import { deletar, listar } from "../../../services/Service";
 
 function DeletarDepartamentos() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: string }>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [departamento, setDepartamento] = useState<Departamentos | null>(null);
+  const [departamento, setDepartamento] = useState<Departamento | null>(null);
 
   async function buscarPorId(id: string) {
     try {
-      const data = await listar(`/departamentos/${id}`);
+      const data = await listar<Departamento>(`/departamentos/${id}`);
       setDepartamento(data);
     } catch (error) {
       alert("Departamento não encontrado!");

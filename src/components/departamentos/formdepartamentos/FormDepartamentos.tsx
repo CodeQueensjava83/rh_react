@@ -2,21 +2,21 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { atualizar, cadastrar, listar } from "../../../services/Service";
-import type Departamentos from "../../../modals/Departamentos";
+import type Departamento from "../../../modals/Departamentos";
 
 function FormDepartamentos() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: string }>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [departamento, setDepartamento] = useState<Departamentos>({} as Departamentos);
+  const [departamento, setDepartamento] = useState<Departamento>({} as Departamento);
 
   async function buscarPorId(id: string) {
     try {
-      const data = await listar(`/departamentos/${id}`);
+      const data = await listar<Departamento>(`/departamentos/${id}`);
       setDepartamento(data);
     } catch (error) {
-      alert("Departamento não encontrado!");
+      alert("Departamento nÃ£o encontrado!");
       console.error(error);
       retornar();
     }

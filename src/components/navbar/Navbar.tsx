@@ -7,8 +7,10 @@ export default function Navbar() {
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
   return (
-    <nav className="relative z-50 w-full bg-orange-500 text-white shadow-md">
-      <div className="container mx-auto flex justify-between items-center py-4 px-4">
+    <nav className="fixed top-0 left-0 w-full bg-orange-500 text-white shadow-md z-50">
+
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+
 
         {/* LOGO */}
         <Link to="/" className="text-3xl font-extrabold tracking-wide">
@@ -84,11 +86,21 @@ export default function Navbar() {
           <li>
             <Link
               to="/login"
-              className="flex items-center gap-2 border border-white rounded-full px-5 py-2 
+              className="flex items-center gap-2 border border-white rounded-full px-5 py-[7px]
                         hover:bg-white hover:text-orange-500 transition font-semibold
                         text-lg md:text-xl"
             >
-              <User size={22} weight="bold" /> Login
+              <User size={22} weight="bold" /> Acessar
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/logout"
+              className="flex items-center gap-2 border border-white rounded-full px-5 py-[7px]
+              hover:bg-white hover:text-orange-500 transition font-semibold
+              text-lg md:text-xl"
+            >
+              <User size={22} weight="bold" /> Sair
             </Link>
           </li>
         </ul>

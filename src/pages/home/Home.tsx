@@ -36,25 +36,28 @@ function Home() {
             Conectando pessoas, fortalecendo talentos.
           </p>
 
+          {/* BOTÕES */}
           <div className="flex justify-center mt-6 gap-4">
             <a
               href="https://github.com/CodeQueensjava83"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-sky-800 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:bg-orange-500"
+              className="bg-sky-800 text-white px-10 py-4 text-lg rounded-2xl font-semibold shadow-lg 
+               hover:bg-orange-500 transition-all duration-300"
             >
               Experimentar grátis
             </a>
 
             <a
               href="/chat"
-              className="bg-sky-800 text-white px-8 py-3 rounded-xl font-semibold shadow-md hover:bg-orange-500 transition"
+              className="bg-sky-800 text-white px-10 py-4 text-lg rounded-2xl font-semibold shadow-lg 
+               hover:bg-orange-500 transition-all duration-300"
             >
-              Falar com o time
+              Falar com a Nex
             </a>
           </div>
-        </div>
 
+        </div>
       </section>
 
       {/* SOLUÇÕES */}
