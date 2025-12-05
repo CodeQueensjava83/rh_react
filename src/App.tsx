@@ -13,16 +13,22 @@ import DeletarColaboradores from './components/colaboradores/deletarcolaboradore
 import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
 
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+
 function App() {
   return (
     <AuthProvider>
+      <ToastContainer />
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <div className="flex-1 w-full pt-16 bg-slate-200">
+          <div className
+          ="flex-1 w-full pt-16 bg-slate-200">
             <Routes>
               {/* Rotas públicas */}
               <Route path="/home" element={<Home />} />
+              <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/" element={<Login />} />
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />

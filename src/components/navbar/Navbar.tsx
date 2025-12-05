@@ -48,6 +48,7 @@ export default function Navbar() {
               <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
               <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamento</Link>
               <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuário</Link>
+              <Link to='/cadastro' className="hover:underline">Cadastrar colaborador </Link>
             </ul>
 
             {/* SUBMENU MOBILE */}
