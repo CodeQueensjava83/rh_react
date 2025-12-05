@@ -11,10 +11,12 @@ import FormColaboradores from './components/colaboradores/formcolaboradores/Form
 import DeletarColaboradores from './components/colaboradores/deletarcolaboradores/DeletarColaboradores';
 import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <AuthProvider>
+      <ToastContainer />
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <Navbar />
