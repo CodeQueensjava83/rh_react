@@ -1,29 +1,47 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useContext, useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { atualizar, cadastrar, listar } from "../../../services/Service";
-import type Departamentos from "../../../modals/Departamentos";
+import type Departamento from "../../../modals/Departamentos";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function FormDepartamentos() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: string }>();
+
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [departamento, setDepartamento] = useState<Departamentos>({} as Departamentos);
+  const [departamento, setDepartamento] = useState<Departamento>({
+    id: 0,
+    nome: "",
+  });
 
-  async function buscarPorId(id: string) {
+  async function listarPorId(id: string) {
     try {
-      const data = await listar(`/departamentos/${id}`);
-      setDepartamento(data);
-    } catch (error) {
-      alert("Departamento não encontrado!");
-      console.error(error);
+      await listar(`/departamentos/${id}`, setDepartamento, {
+        headers: { Authorization: token },
+      });
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      } else {
+        alert("Departamento não encontrado!");
+      }
       retornar();
     }
   }
 
   useEffect(() => {
-    if (id) buscarPorId(id);
+    if (token === "") {
+      alert("Você precisa estar logado!");
+      navigate("/");
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (id) listarPorId(id);
   }, [id]);
 
   function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
@@ -39,16 +57,23 @@ function FormDepartamentos() {
 
     try {
       if (id) {
-        await atualizar(`/departamentos`, departamento);
+        await atualizar(`/departamentos`, departamento, setDepartamento, {
+          headers: { Authorization: token },
+        });
         alert("Departamento atualizado com sucesso!");
       } else {
-        await cadastrar(`/departamentos`, departamento);
+        await cadastrar(`/departamentos`, departamento, setDepartamento, {
+          headers: { Authorization: token },
+        });
         alert("Departamento cadastrado com sucesso!");
       }
       retornar();
-    } catch (error) {
-      alert("Erro ao salvar o departamento!");
-      console.error(error);
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      } else {
+        alert("Erro ao salvar o departamento!");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -74,10 +99,10 @@ function FormDepartamentos() {
             type="text"
             placeholder="Departamento"
             id="descricao"
-            name="descricao"
+            name="nome"
             className="p-2 text-base bg-white rounded md:text-lg"
             required
-            value={departamento.descricao || ""}
+            value={departamento.nome || ""}
             onChange={atualizarEstado}
           />
         </div>

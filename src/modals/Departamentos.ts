@@ -1,7 +1,7 @@
 import type Colaboradores from "./Colaboradores";
 
-export default interface Departamento{
+export default interface Departamentos{
     id: number;
-    descricao: string;
+    nome: string;
     colaborador?: Colaboradores[];
 }
