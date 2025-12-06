@@ -42,9 +42,9 @@ export default function Navbar() {
             </button>
 
             {/* SUBMENU DESKTOP */}
-            <ul className="absolute left-0 top-full mt-2 w-40 bg-white text-gray-700 shadow-lg rounded-lg overflow-hidden opacity-0 
+            <ul className="group-hover:flex flex-col absolute left-0 top-full mt-2 bg-white text-gray-700 shadow-lg rounded-lg overflow-hidden opacity-0 
             invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              
+
               <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaboradores</Link>
               <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamentos</Link>
               <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuários</Link>
