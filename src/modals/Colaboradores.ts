@@ -5,6 +5,6 @@ export default interface Colaboradores {
     cargo: string;
     setor: string;
     salario: number;
-    horasMensais: number;
-    dependentes: number;
+    horasMensais?: number;
+    dependentes?: number;
 }

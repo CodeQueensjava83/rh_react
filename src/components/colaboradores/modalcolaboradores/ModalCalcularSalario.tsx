@@ -1,86 +1,100 @@
-import React, { useState } from "react";
-import { calcularSalario } from "../../../services/Service";
+import Popup from "reactjs-popup";
+import jsPDF from "jspdf";
+import type Colaboradores from "../../../modals/Colaboradores";
 
-type ModalCalcularSalarioProps = {
+interface ModalCalcularSalarioProps {
   colaboradoresId: number;
+  colaborador: Colaboradores;
   onClose: () => void;
-  onSuccess: (holerite: any) => void;
-};
+}
 
-const ModalCalcularSalario: React.FC<ModalCalcularSalarioProps> = ({ colaboradoresId, onClose, onSuccess }) => {
-  const [horasExtras, setHorasExtras] = useState<number>();
-  const [descontos, setDescontos] = useState<number>();
-  const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+function ModalCalcularSalario({ colaboradoresId, colaborador, onClose }: ModalCalcularSalarioProps) {
+  const valorHora = colaborador.salario / colaborador.horasMensais;
+  const salarioBruto = colaborador.salario;
+  const descontoPorDependente = 200;
+  const descontos = colaborador.dependentes * descontoPorDependente;
+  const salarioLiquido = salarioBruto - descontos;
 
-  const Calcular = async () => {
-    setLoading(true);
-    setErro(null);
-    try {
-      const resultado = await calcularSalario(
-        `/colaboradores/calcularsalario/${colaboradoresId}`, // ✅ usa direto o número
-        {
-          totalHorasExtras: horasExtras,
-          descontos: descontos,
-        }
-      );
-      onSuccess(resultado);
-    } catch (error) {
-      setErro("Erro ao calcular salário. Verifique os dados ou a conexão.");
-      console.error("Erro ao calcular salário:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const formatarValor = (valor: number) =>
+    valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  // Função para gerar PDF
+  function gerarPDF() {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("HOLERITE", 105, 20, { align: "center" });
+
+    doc.setFontSize(12);
+    doc.text(`Nome: ${colaborador.nome}`, 20, 40);
+    doc.text(`Cargo: ${colaborador.cargo}`, 20, 50);
+    doc.text(`Setor: ${colaborador.setor}`, 20, 60);
+    doc.text(`Valor Hora: ${formatarValor(valorHora)}`, 20, 70);
+    doc.text(`Horas Mensais: ${colaborador.horasMensais}`, 20, 80);
+    doc.text(`Dependentes: ${colaborador.dependentes}`, 20, 90);
+
+    doc.text(`Salário Bruto: ${formatarValor(salarioBruto)}`, 20, 110);
+    doc.text(`Descontos: ${formatarValor(descontos)}`, 20, 120);
+    doc.text(`Salário Líquido: ${formatarValor(salarioLiquido)}`, 20, 130);
+
+    // Abre o PDF em nova aba
+    window.open(doc.output("bloburl"), "_blank");
+  }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg w-96 shadow-lg space-y-4">
-        <h2 className="text-3xl font-semibold text-center text-amber-500">Calcular Salário</h2>
+    <Popup
+      open={true}
+      onClose={onClose}
+      modal
+      contentStyle={{
+        borderRadius: "1rem",
+        padding: "2rem",
+        backgroundColor: "#ffffff",
+        border: "1px solid #e2e8f0", // slate-200
+        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+        width: "90%",
+        maxWidth: "500px"
+      }}
+    >
+      <div className="text-slate-700">
+        <h2 className="text-3xl font-bold text-center text-orange-400 uppercase mb-6">
+          Calcular Salário
+        </h2>
 
-        <div className="space-y-3">
-          <div>
-            <label className="block text-center text-xl font-medium mb-1">Total de Horas Extras:</label>
-            <input
-              type="number"
-              value={horasExtras}
-              onChange={(e) => setHorasExtras(Number(e.target.value))}
-              className="w-full text-center px-3 py-2 border rounded"
-              placeholder="Ex: 10"
-            />
-          </div>
+        <div className="flex flex-col gap-2 text-base font-semibold">
+          <p><strong>Nome:</strong> {colaborador.nome}</p>
+          <p><strong>Cargo:</strong> {colaborador.cargo}</p>
+          <p><strong>Setor:</strong> {colaborador.setor}</p>
+          <p><strong>Valor Hora:</strong> {formatarValor(valorHora)}</p>
+          <p><strong>Horas Mensais:</strong> {colaborador.horasMensais}</p>
+          <p><strong>Dependentes:</strong> {colaborador.dependentes}</p>
 
-          <div>
-            <label className="block text-center text-xl font-medium mb-1">Descontos:</label>
-            <input
-              type="number"
-              value={descontos}
-              onChange={(e) => setDescontos(Number(e.target.value))}
-              className="w-full text-center px-3 py-2 border rounded"
-              placeholder="Ex: 150.00"
-            />
-          </div>
+          <hr className="my-2 border-slate-300" />
 
-          {erro && <p className="text-red-600 text-sm text-center">{erro}</p>}
+          <p><strong>Salário Bruto:</strong> {formatarValor(salarioBruto)}</p>
+          <p><strong>Descontos:</strong> {formatarValor(descontos)}</p>
+          <p className="text-xl font-bold text-slate-800">
+            <strong>Salário Líquido:</strong> {formatarValor(salarioLiquido)}
+          </p>
+        </div>
 
+        <div className="flex justify-center gap-4 mt-6">
           <button
-            className="w-full py-2 bg-amber-500 text-white rounded hover:bg-amber-400 transition-colors"
-            onClick={Calcular}
-            disabled={loading}
-          >
-            {loading ? "Calculando..." : "Calcular"}
-          </button>
-
-          <button
-            className="w-full py-2 bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition-colors"
+            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
             onClick={onClose}
           >
-            Cancelar
+            Fechar
+          </button>
+          <button
+            className="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-400"
+            onClick={gerarPDF}
+          >
+            Gerar Holerite (PDF)
           </button>
         </div>
       </div>
-    </div>
+    </Popup>
   );
-};
+}
 
 export default ModalCalcularSalario;

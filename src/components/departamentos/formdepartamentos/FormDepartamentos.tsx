@@ -5,11 +5,6 @@ import { AuthContext } from "../../../contexts/AuthContext";
 import { listar, atualizar, cadastrar } from "../../../services/Service";
 import type Departamentos from "../../../modals/Departamentos";
 
-
-FormDepartamentos
-
-
-
 interface FormDepartamentosProps {
   onSuccess?: () => void;
 }

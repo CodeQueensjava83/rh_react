@@ -1,24 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import type Colaboradores from "../../../modals/Colaboradores";
 import { deletar, listar } from "../../../services/Service";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function DeletarColaboradores() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
   const [isLoading, setIsLoading] = useState(false);
   const [colaborador, setColaborador] = useState<Colaboradores | null>(null);
 
   async function buscarColaboradorPorId(id: string) {
     try {
-      const data = await listar(`/colaboradores/${id}`);
+      const data = await listar(`/colaboradores/${id}`, undefined, {
+        headers: { Authorization: token },
+      });
       setColaborador(data);
-    } catch {
-      alert("Erro ao listar colaborador!");
+    } catch (error: any) {
+      if (String(error).includes("401")) {
+        handleLogout();
+      } else {
+        alert("Erro ao listar colaborador!");
+      }
     }
   }
+
+  useEffect(() => {
+    if (token === "") {
+      alert("Você precisa estar logado!");
+      navigate("/");
+    }
+  }, [token]);
 
   useEffect(() => {
     if (id) buscarColaboradorPorId(id);
@@ -31,12 +47,18 @@ function DeletarColaboradores() {
   async function deletarColaborador() {
     setIsLoading(true);
     try {
-      await deletar(`/colaboradores/${id}`);
+      await deletar(`/colaboradores/${id}`, {
+        headers: { Authorization: token },
+      });
       alert("Colaborador deletado com sucesso!");
       retornar();
-    } catch (error) {
-      console.error("Erro ao deletar colaborador:", error);
-      alert("Erro ao deletar colaborador!");
+    } catch (error: any) {
+      if (String(error).includes("401")) {
+        handleLogout();
+      } else {
+        console.error("Erro ao deletar colaborador:", error);
+        alert("Erro ao deletar colaborador!");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +71,7 @@ function DeletarColaboradores() {
         Você tem certeza de que deseja apagar o colaborador a seguir?
       </p>
 
-      <div className="border flex flex-col rounded-2xl overflow-hidden justify-between">
+      <div className="border flex flex-col rounded-2xl overflow-hidden justify-between shadow-md">
         {colaborador && (
           <>
             <header className="py-2 px-6 bg-amber-500 text-white font-bold text-2xl">
@@ -61,14 +83,14 @@ function DeletarColaboradores() {
 
         <div className="flex">
           <button
-            className="text-slate-100 w-full py-2 bg-red-200 hover:bg-red-500 md:text-lg"
+            className="text-white w-1/2 py-2 bg-red-400 hover:bg-red-500 md:text-lg"
             onClick={retornar}
           >
             Não
           </button>
 
           <button
-            className="flex items-center justify-center w-full text-base bg-green-200 text-white hover:bg-green-400 md:text-lg"
+            className="flex items-center justify-center w-1/2 text-base bg-green-500 text-white hover:bg-green-600 md:text-lg"
             onClick={deletarColaborador}
             disabled={isLoading}
           >

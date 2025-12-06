@@ -31,8 +31,7 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
 
   const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
   const [departamento, setDepartamento] = useState<Departamentos>({
-    id: 0,
-    descricao: "",
+    nome: "",
   });
 
   const [colaborador, setColaborador] = useState<Colaboradores>(
@@ -221,14 +220,14 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         </div>
       </div>
 
-      {/* Email */}
+      {/* Setor */}
       <div className="flex flex-col gap-2">
-        <label htmlFor="email">E-mail</label>
+        <label htmlFor="setor">Setor</label>
         <input
           type="text"
-          id="email"
-          name="email"
-          value={colaborador.email || ""}
+          id="setor"
+          name="setor"
+          value={colaborador.setor || ""}
           onChange={atualizarEstado}
           className="p-2 border rounded-lg"
         />
@@ -250,14 +249,13 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
 
           {departamentos.map((d) => (
             <option key={d.id} value={d.id}>
-              {d.descricao}
+              {d.nome}
             </option>
           ))}
         </select>
       </div>
 
       {/* 
-        INÍCIO DAS MUDANÇAS NOS BOTÕES
       */}
       {/* Botões */}
       <div className="flex pt-2 gap-2">
@@ -283,12 +281,10 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         </button>
       </div>
       {/* 
-        FIM DAS MUDANÇAS NOS BOTÕES
       */}
     </form>
   );
 
-  // Renderização como página (sem modal)
   if (!onClose) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen py-12 px-4 bg-gray-200">
@@ -297,9 +293,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     );
   }
 
-  // Renderização como modal
-  // 
-  // INÍCIO DA MUDANÇA: Adiciona um container relativo e o botão "X" de fechar
   return (
     <div className="relative">
       <button
@@ -312,8 +305,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
       {formContent}
     </div>
   );
-  // 
-  // FIM DA MUDANÇA
 }
 
 export default FormColaboradores;

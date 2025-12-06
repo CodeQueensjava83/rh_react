@@ -3,43 +3,43 @@ import {
   PencilIcon,
   TrashIcon,
   CurrencyCircleDollarIcon,
-  EnvelopeIcon,
   BriefcaseIcon,
   BuildingsIcon,
 } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
 import type Colaboradores from '../../../modals/Colaboradores';
-import ModalHolerite from '../modalcolaboradores/ModalHolerite';
 import ModalCalcularSalario from '../modalcolaboradores/ModalCalcularSalario';
 
 interface CardColaboradoresProps {
   colaboradores: Colaboradores;
-  onCalcular?: (colaboradores: Colaboradores) => void;
-  onHolerite?: (colaboradores: Colaboradores) => void;
 }
 
-function CardColaboradores({ colaboradores, onCalcular, onHolerite }: CardColaboradoresProps) {
-  const [holerite, setHolerite] = useState<any | null>(null);
+function CardColaboradores({ colaboradores }: CardColaboradoresProps) {
+  const [setHolerite] = useState<any | null>(null);
   const [openCalcular, setOpenCalcular] = useState(false);
-  const [openHolerite, setOpenHolerite] = useState(false);
+  const [setOpenHolerite] = useState(false);
 
   return (
     <>
       <div className="relative flex flex-col justify-between overflow-hidden bg-white rounded-lg border border-slate-200 hover:border-amber-400 transition-all duration-300 hover:shadow-lg w-80 mx-auto p-6 space-y-4">
         {/* Ícones de editar/deletar */}
         <div className="absolute top-3 right-3 flex gap-2 z-10">
-          <Link to={`/editarcolaborador/${colaboradores.id}`}>
+          <Link to={`/colaboradores/editar/${colaboradores.id}`}>
             <PencilIcon size={22} className="text-slate-400 hover:text-amber-600 transition-colors cursor-pointer" />
           </Link>
-          <Link to={`/deletarcolaborador/${colaboradores.id}`}>
+          <Link to={`/colaboradores/deletar/${colaboradores.id}`}>
             <TrashIcon size={22} className="text-slate-400 hover:text-red-600 transition-colors cursor-pointer" />
           </Link>
         </div>
 
         {/* Foto */}
         <div className="flex justify-start -mt-4">
-          <div className="w-20 h-20 rounded-full border-4 border-white shadow-md overflow-hidden bg-slate-100">
-            <img src='https://ik.imagekit.io/codequeens/NEXUM%20RH/user.png' alt="Foto do colaborador" className="w-full h-full object-cover" />
+          <div className="w-20 h-20 rounded-full border-4 border-white shadow-md overflow-hidden bg-slate-100 flex items-center justify-center">
+            <img
+              src="https://ik.imagekit.io/codequeens/NEXUM%20RH/user.png"
+              alt="Foto do colaborador"
+              className="w-full h-full object-cover object-center rounded-full"
+            />
           </div>
         </div>
 
@@ -48,15 +48,11 @@ function CardColaboradores({ colaboradores, onCalcular, onHolerite }: CardColabo
           <h3 className="text-xl font-semibold text-slate-800">{colaboradores.nome}</h3>
           <div className="flex items-center gap-2">
             <BuildingsIcon size={20} className="text-amber-500" />
-            <span>{colaboradores.departamento?.descricao ?? 'Não informado'}</span>
+            <span>{colaboradores.setor ?? 'Não informado'}</span>
           </div>
           <div className="flex items-center gap-2">
             <BriefcaseIcon size={20} className="text-amber-500" />
             <span>{colaboradores.cargo}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <EnvelopeIcon size={20} className="text-amber-500" />
-            <span>{colaboradores.email}</span>
           </div>
           <div className="flex items-center gap-2">
             <CurrencyCircleDollarIcon size={20} className="text-amber-500" />
@@ -70,23 +66,9 @@ function CardColaboradores({ colaboradores, onCalcular, onHolerite }: CardColabo
         <div className="flex gap-2 pt-2">
           <button
             className="flex-1 py-2 bg-amber-500 text-white rounded hover:bg-amber-400 transition-colors text-sm"
-            onClick={() => {
-              setOpenCalcular(true);
-              onCalcular?.(colaboradores);
-            }}
+            onClick={() => setOpenCalcular(true)}
           >
             Calcular Salário
-          </button>
-
-          <button
-            className="flex-1 py-2 bg-neutral-500 text-white rounded hover:bg-neutral-400 transition-colors text-sm"
-            onClick={() => {
-              setOpenHolerite(true);
-              onHolerite?.(colaboradores);
-            }}
-            disabled={!holerite}
-          >
-            Holerite
           </button>
         </div>
       </div>
@@ -95,6 +77,7 @@ function CardColaboradores({ colaboradores, onCalcular, onHolerite }: CardColabo
       {openCalcular && (
         <ModalCalcularSalario
           colaboradoresId={colaboradores.id}
+          colaborador={colaboradores}
           onClose={() => setOpenCalcular(false)}
           onSuccess={(hol) => {
             setHolerite(hol);
@@ -102,10 +85,6 @@ function CardColaboradores({ colaboradores, onCalcular, onHolerite }: CardColabo
             setOpenHolerite(true);
           }}
         />
-      )}
-
-      {openHolerite && holerite && (
-        <ModalHolerite holerite={holerite} colaboradores={colaboradores} onClose={() => setOpenHolerite(false)} />
       )}
     </>
   );
