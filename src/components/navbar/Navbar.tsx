@@ -47,7 +47,6 @@ export default function Navbar() {
 
               <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaboradores</Link>
               <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamentos</Link>
-              <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuários</Link>
             </ul>
 
             {/* SUBMENU MOBILE */}
@@ -55,7 +54,6 @@ export default function Navbar() {
               <ul className="flex flex-col md:hidden bg-white text-gray-700 mt-2 rounded-lg shadow z-50">
                 <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaboradores</Link>
                 <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamentos</Link>
-                <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuários</Link>
               </ul>
             )}
           </li>
