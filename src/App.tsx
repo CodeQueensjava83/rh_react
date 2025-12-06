@@ -13,6 +13,7 @@ import DeletarColaboradores from './components/colaboradores/deletarcolaboradore
 import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
 import Perfil from './pages/perfil/Perfil';
+import AtualizarPerfil from './pages/perfil/AtualizarPerfil';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
               <Route path="/quem-somos" element={<QuemSomos />} />
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
               <Route path="/perfil" element={<Perfil />} />
+              <Route path="/atualizarusuario" element={<AtualizarPerfil />} />
 
               {/* Colaboradores */}
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />

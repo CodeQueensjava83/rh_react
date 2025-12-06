@@ -11,17 +11,15 @@
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
-    "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.10.0",
+    "react-router-dom": "^7.10.1",
     "react-spinners": "^0.17.0",
     "react-toastify": "^11.0.5",
-    "reactjs-popup": "^2.0.6",
-    "tailwindcss": "^4.1.17"
+    "reactjs-popup": "^2.0.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
