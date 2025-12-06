@@ -1,130 +1,111 @@
-import { useContext, useState, useEffect, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { listar, atualizar, cadastrar } from "../../../services/Service";
+import { listar, cadastrar, atualizar } from "../../../services/Service";
 import type Departamentos from "../../../modals/Departamentos";
 
-
-FormDepartamentos
-
-
-
 interface FormDepartamentosProps {
-  onSuccess?: () => void;
+  onSuccess?: () => void; // usado no modal
 }
 
 function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   const navigate = useNavigate();
-  const { id } = useParams<{ id?: string }>();
 
-  const { usuario, handleLogout } = useContext(AuthContext);
-  const token = usuario.token;
-
-  const [isLoading, setIsLoading] = useState(false);
   const [departamento, setDepartamento] = useState<Departamentos>({
+    id: 0,
     nome: "",
   });
 
+  const { id } = useParams();
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
-  async function listarPorId(id: string) {
+  useEffect(() => {
+    if (token === "") navigate("/");
+
+    if (id) buscarPorId();
+  }, [id, token]);
+
+  async function buscarPorId() {
     try {
       await listar(`/departamentos/${id}`, setDepartamento, {
         headers: { Authorization: token },
       });
     } catch (error: any) {
-      if (error.toString().includes("401")) {
-        handleLogout();
-      } else {
-        alert("Departamento não encontrado!");
-      }
-      retornar();
+      if (error.toString().includes("401")) handleLogout();
     }
   }
 
-  useEffect(() => {
-    if (token === "") {
-      alert("Você precisa estar logado!");
-      navigate("/");
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (id) listarPorId(id);
-  }, [id]);
-
-  function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
+  function atualizarEstado(e: React.ChangeEvent<HTMLInputElement>) {
     setDepartamento({
       ...departamento,
       [e.target.name]: e.target.value,
     });
   }
 
-  async function gerarNovoDepartamento(e: FormEvent<HTMLFormElement>) {
+  async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    setIsLoading(true);
 
     try {
       if (id) {
-        await atualizar(`/departamentos`, departamento, setDepartamento, {
+        await atualizar(`/departamentos`, departamento, undefined, {
           headers: { Authorization: token },
         });
-        alert("Departamento atualizado com sucesso!");
       } else {
-        await cadastrar(`/departamentos`, { nome: departamento.nome }, setDepartamento, {
+        await cadastrar(`/departamentos`, departamento, undefined, {
           headers: { Authorization: token },
         });
-        alert("Departamento cadastrado com sucesso!");
       }
 
-      if (onSuccess) onSuccess(); // dispara callback
-    } catch (error: any) {
-      if (error.toString().includes("401")) {
-        handleLogout();
-      } else {
-        alert("Erro ao salvar o departamento!");
+      // Se o formulário está em um modal, fecha e atualiza
+      if (onSuccess) {
+        onSuccess();
+        return;
       }
-    } finally {
-      setIsLoading(false);
+
+      // Se for edição por página, volta para a lista
+      navigate("/departamentos");
+
+    } catch (error: any) {
+      if (error.toString().includes("401")) handleLogout();
     }
   }
 
-  function retornar() {
-    navigate("/departamentos");
-  }
+return (
+  <div className="flex justify-center items-center w-full px-4 mt-10">
+    <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-xl">
 
-  return (
-    <div className="flex flex-col items-center justify-center py-12 sm:py-20 mx-auto bg-gray-200">
-      <h1 className="my-8 text-lg text-center md:text-4xl font-bold uppercase py-6 text-orange-400 gap-4">
+      {/* Título */}
+      <h1 className="text-3xl font-bold text-orange-400 text-center mb-6">
         {id ? "Editar Departamento" : "Cadastrar Departamento"}
       </h1>
 
-      <form
-        className="flex flex-col w-full max-w-md gap-4 px-2 md:max-w-1/2"
-        onSubmit={gerarNovoDepartamento}
-      >
-        <div className="flex flex-col gap-2 text-orange-400 text-2xl">
-          <label htmlFor="descricao">Departamento</label>
+      <form onSubmit={salvar} className="flex flex-col gap-6">
+
+        {/* Campo Nome */}
+        <div className="flex flex-col gap-2">
+          <label className="font-semibold text-gray-700">Nome</label>
           <input
             type="text"
-            placeholder="Departamento"
-            id="descricao"
             name="nome"
-            className="p-2 text-base bg-white rounded md:text-lg"
-            required
-            value={departamento.nome || ""}
+            value={departamento.nome}
             onChange={atualizarEstado}
+            className="border p-3 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+            required
           />
         </div>
+
+        {/* Botão */}
         <button
-          className="flex justify-center w-full py-2 mx-auto text-base rounded text-slate-100 font-bold bg-orange-400 hover:bg-orange-200 md:w-1/2 md:text-lg"
           type="submit"
+          className="bg-orange-400 hover:bg-orange-500 text-white w-full py-3 rounded-xl text-lg font-bold transition-all"
         >
-          {isLoading ? <ClipLoader color="#ffffff" size={24} /> : <span>{id ? "Atualizar" : "Cadastrar"}</span>}
+          {id ? "Salvar Alterações" : "Cadastrar"}
         </button>
       </form>
     </div>
-  );
-}
+  </div>
+);
 
+}
 export default FormDepartamentos;

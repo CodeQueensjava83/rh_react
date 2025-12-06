@@ -5,14 +5,14 @@ import type Departamentos from "../../../modals/Departamentos";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { listar } from "../../../services/Service";
 import CardDepartamentos from "../carddepartamentos/CardDepartamentos";
-import FormDepartamentos from "../formdepartamentos/FormDepartamentos"; // importa seu form
+import FormDepartamentos from "../formdepartamentos/FormDepartamentos";
 
 function ListaDepartamentos() {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // controla modal
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
@@ -52,7 +52,7 @@ function ListaDepartamentos() {
 
       <div className="flex justify-center w-full px-4 my-4">
         <div className="container flex flex-col">
-          {/* Botão para abrir modal */}
+
           <div className="flex justify-end mb-4">
             <button
               onClick={() => setIsModalOpen(true)}
@@ -71,7 +71,7 @@ function ListaDepartamentos() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {departamentos.map((departamento) => (
               <CardDepartamentos
-                key={departamento.nome}
+                key={departamento.id}
                 departamentos={departamento}
               />
             ))}
@@ -79,7 +79,6 @@ function ListaDepartamentos() {
         </div>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
@@ -95,10 +94,10 @@ function ListaDepartamentos() {
               </button>
             </div>
             <FormDepartamentos 
-                onSuccess={() => {
-                    setIsModalOpen(false);
-                    listarDepartamentos();
-                }}
+              onSuccess={() => {
+                setIsModalOpen(false);
+                listarDepartamentos();
+              }}
             />
           </div>
         </div>
