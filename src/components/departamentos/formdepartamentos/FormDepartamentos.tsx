@@ -1,11 +1,20 @@
-import { useContext, useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useContext, useState, useEffect, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import { atualizar, cadastrar, listar } from "../../../services/Service";
-import type Departamento from "../../../modals/Departamentos";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { listar, atualizar, cadastrar } from "../../../services/Service";
+import type Departamentos from "../../../modals/Departamentos";
 
-function FormDepartamentos() {
+
+FormDepartamentos
+
+
+
+interface FormDepartamentosProps {
+  onSuccess?: () => void;
+}
+
+function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
 
@@ -13,10 +22,10 @@ function FormDepartamentos() {
   const token = usuario.token;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [departamento, setDepartamento] = useState<Departamento>({
-    id: 0,
+  const [departamento, setDepartamento] = useState<Departamentos>({
     nome: "",
   });
+
 
   async function listarPorId(id: string) {
     try {
@@ -62,12 +71,13 @@ function FormDepartamentos() {
         });
         alert("Departamento atualizado com sucesso!");
       } else {
-        await cadastrar(`/departamentos`, departamento, setDepartamento, {
+        await cadastrar(`/departamentos`, { nome: departamento.nome }, setDepartamento, {
           headers: { Authorization: token },
         });
         alert("Departamento cadastrado com sucesso!");
       }
-      retornar();
+
+      if (onSuccess) onSuccess(); // dispara callback
     } catch (error: any) {
       if (error.toString().includes("401")) {
         handleLogout();
