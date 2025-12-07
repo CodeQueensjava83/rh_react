@@ -64,6 +64,13 @@ export const deletar = async (
   url: string,
   config: AxiosRequestConfig = {}
 ): Promise<void> => {
+  if (config.headers && config.headers.Authorization) {
+    const token = config.headers.Authorization;
+    if (!token.startsWith("Bearer ")) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
   await api.delete(url, config);
 };
 

@@ -95,7 +95,7 @@ export default function Navbar() {
           </li>
           <li>
             <Link
-              to="/logout"
+              to="/login"
               className="flex items-center gap-2 border border-white rounded-full px-5 py-[7px]
               hover:bg-white hover:text-orange-500 transition font-semibold
               text-lg md:text-xl"

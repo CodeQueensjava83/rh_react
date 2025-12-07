@@ -149,7 +149,7 @@ function Cadastro() {
 
           <button
             type="submit"
-            className="rounded text-white bg-green-500 hover:bg-green-600 w-1/2 py-2 flex justify-center"
+            className="rounded text-white bg-amber-500 hover:bg-amber-600 w-1/2 py-2 flex justify-center"
           >
             {isLoading ? (
               <ClipLoader color="#ffffff" size={24} />
