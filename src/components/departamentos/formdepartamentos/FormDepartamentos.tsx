@@ -57,33 +57,38 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   }
 
   async function gerarNovoDepartamento(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      if (id !== undefined) {
-        await atualizar(`/departamentos`, payload, setDepartamento, {
-          headers: { Authorization: token },
-        });
-        alert("Departamento atualizado com sucesso!");
-      } else {
-        await cadastrar(`/departamentos`, { nome: departamento.nome }, setDepartamento, {
-          headers: { Authorization: token },
-        });
-        alert("Departamento cadastrado com sucesso!");
-      }
-
-      if (onSuccess) onSuccess(); // dispara callback
-    } catch (error: any) {
-      if (error.toString().includes("401")) {
-        handleLogout();
-      } else {
-        alert("Erro ao salvar o departamento!");
-      }
-    } finally {
-      setIsLoading(false);
+  try {
+    if (id !== undefined) {
+      await atualizar(`/departamentos`, payload, setDepartamento, {
+        headers: { Authorization: token },
+      });
+      alert("Departamento atualizado com sucesso!");
+    } else {
+      await cadastrar(`/departamentos`, { nome: departamento.nome }, setDepartamento, {
+        headers: { Authorization: token },
+      });
+      alert("Departamento cadastrado com sucesso!");
     }
+
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      retornar(); // <- redireciona para a listagem
+    }
+  } catch (error: any) {
+    if (error.toString().includes("401")) {
+      handleLogout();
+    } else {
+      alert("Erro ao salvar o departamento!");
+    }
+  } finally {
+    setIsLoading(false);
   }
+}
+
 
   function retornar() {
     navigate("/departamentos");
@@ -116,7 +121,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
           className="flex justify-center w-full py-2 mx-auto text-base rounded text-slate-100 font-bold bg-orange-400 hover:bg-orange-200 md:w-1/2 md:text-lg"
           type="submit"
         >
-          {isLoading ? <ClipLoader color="#FFA500" size={24} /> : <span>{id === undefined ? "Atualizar" : "Cadastrar"}</span>}
+          {isLoading ? <ClipLoader color="#FFA500" size={24} /> : <span>{id ? "Atualizar" : "Cadastrar"}</span>}
         </button>
       </form>
     </div>

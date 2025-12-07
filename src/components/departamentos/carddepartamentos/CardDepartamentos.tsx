@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import type Departamentos from "../../../modals/Departamentos";
 
@@ -21,14 +20,14 @@ function CardDepartamentos({ departamentos }: CardDepartamentosProps) {
 
       <div className="flex">
         <Link
-          to={`/departamentos/editar/${departamentos.nome}`}
+          to={`/departamentos/editar/${departamentos.id}`}
           className="w-full text-black bg-gray-300 hover:bg-gray-400 flex items-center justify-center py-2"
         >
           <button>Editar</button>
         </Link>
 
         <Link
-          to={`/departamentos/deletar/${departamentos.nome}`}
+          to={`/departamentos/deletar/${departamentos.id}`}
           className="text-black bg-red-400 hover:bg-red-700 w-full flex items-center justify-center"
         >
           <button>Deletar</button>
@@ -38,5 +37,5 @@ function CardDepartamentos({ departamentos }: CardDepartamentosProps) {
   );
 }
 
+export default CardDepartamentos;
 
-export default CardDepartamentos
