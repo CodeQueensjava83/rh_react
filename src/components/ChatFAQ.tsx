@@ -8,6 +8,8 @@ function ChatFAQ() {
 
   const enviarPergunta = async () => {
     const apiKey = import.meta.env.VITE_TEXTCORTEX_API_KEY;
+
+    // Coloca mensagem do usuário no histórico
     setHistorico((prev) => [...prev, { tipo: "user", texto: mensagem }]);
 
     try {
@@ -15,31 +17,42 @@ function ChatFAQ() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          "Authorization": `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          formality: "default",
-          max_tokens: 512,
-          model: "gemini-2-5-flash",
-          n: 1,
-          source_lang: "pt",
-          target_lang: "pt-br",
+          model: "GPT-4o Mini", 
           temperature: 0.3,
-          text: `Você é um sistema de RH digital de uma empresa, nós te chamamos de Nex.
+          max_tokens: 512,
+          messages: [
+            {
+              role: "system",
+              content: `Você é um sistema de RH digital chamado Nex.
 Responda dúvidas dos colaboradores de forma curta, objetiva e clara.
 Sempre explique:
 1. O passo que o colaborador deve seguir dentro do sistema (ex.: acessar menu de férias, clicar em solicitar).
-2. As regras trabalhistas básicas aplicáveis no Brasil (ex.: aviso prévio de 30 dias, direito a 30 dias de férias por ano).
-Pergunta: ${mensagem}`
+2. As regras trabalhistas básicas aplicáveis no Brasil (ex.: aviso prévio de 30 dias, direito a 30 dias de férias por ano).`
+            },
+            { role: "user", content: mensagem }
+          ]
         })
       });
 
+      // Logs úteis para diagnóstico
+      console.log("STATUS DA API:", resp.status);
       const data = await resp.json();
-      const respostaBot = data?.data?.outputs?.[0]?.text || "Não consegui gerar resposta.";
+      console.log("RETORNO DA API:", data);
+
+      const respostaBot =
+        data?.choices?.[0]?.message?.content || "Não consegui gerar resposta.";
+
       setHistorico((prev) => [...prev, { tipo: "bot", texto: respostaBot }]);
+
     } catch (error) {
       console.error("Erro inesperado:", error);
-      setHistorico((prev) => [...prev, { tipo: "bot", texto: "Erro inesperado ao tentar se conectar à API." }]);
+      setHistorico((prev) => [
+        ...prev,
+        { tipo: "bot", texto: "Erro inesperado ao tentar se conectar à API." }
+      ]);
     }
 
     setMensagem("");
@@ -83,3 +96,4 @@ Pergunta: ${mensagem}`
 }
 
 export default ChatFAQ;
+

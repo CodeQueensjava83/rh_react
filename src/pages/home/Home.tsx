@@ -1,7 +1,3 @@
-import { Link } from "react-router-dom";
-
-
-
 function Home() {
   return (
     <div className="w-full flex flex-col">
@@ -15,24 +11,21 @@ function Home() {
           loop
           muted
           playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-          src="https://ik.imagekit.io/codequeens/NEXUM%20RH/videoHome.mp4?updatedAt=1764884167851"
-        />
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src="https://ik.imagekit.io/codequeens/NEXUM%20RH/videoHome.mp4" type="video/mp4" />
+        </video>
 
+        {/* OVERLAY SUAVE */}
+        <div className="absolute inset-0 bg-black/20 z-10"></div>
 
-        {/* EFEITO NO VÍDEO - BLUR*/}
-        <div className="absolute inset-0 backdrop-blur-[1px] md:backdrop-blur-[2px]"></div>
-
-        {/* EFEITO NO VÍDEO - CONTRASTE */}
-        <div className="absolute inset-0 bg-black/40"></div>
-
-        {/* TEXTO VÍDEO */}
-        <div className="relative z-10 text-center px-4 max-w-3xl text-white flex flex-col gap-6 animate-fadein">
+        {/* TEXTO */}
+        <div className="relative z-20 text-center px-4 max-w-3xl text-gray-700 flex flex-col gap-6 animate-fadein">
           <h1 className="text-5xl md:text-6xl font-extrabold drop-shadow-lg leading-tight">
             Plataforma completa de RH para empresas que valorizam pessoas
           </h1>
 
-          <p className="text-lg md:text-2xl font-light text-gray-200">
+          <p className="text-lg md:text-2xl font-bold text-gray-700">
             Conectando pessoas, fortalecendo talentos.
           </p>
 
@@ -56,7 +49,6 @@ function Home() {
               Falar com a Nex
             </a>
           </div>
-
         </div>
       </section>
 
@@ -64,15 +56,12 @@ function Home() {
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
 
-          {/* TÍTULO */}
           <h2 className="text-4xl font-extrabold text-center text-[#0A2A43] mb-16 tracking-tight">
             Soluções NexumRH
           </h2>
 
-          {/* GRID DE CARDS */}
           <div className="grid md:grid-cols-3 gap-10">
 
-            {/* CARD 1 */}
             <div className="bg-white p-10 rounded-3xl border border-gray-200 shadow-md
                       hover:shadow-xl hover:-translate-y-2 hover:border-orange-500
                       transition-all duration-300 cursor-pointer">
@@ -82,7 +71,6 @@ function Home() {
               </p>
             </div>
 
-            {/* CARD 2 */}
             <div className="bg-white p-10 rounded-3xl border border-gray-200 shadow-md
                       hover:shadow-xl hover:-translate-y-2 hover:border-orange-500
                       transition-all duration-300 cursor-pointer">
@@ -92,7 +80,6 @@ function Home() {
               </p>
             </div>
 
-            {/* CARD 3 */}
             <div className="bg-white p-10 rounded-3xl border border-gray-200 shadow-md
                       hover:shadow-xl hover:-translate-y-2 hover:border-orange-500
                       transition-all duration-300 cursor-pointer">
@@ -106,7 +93,6 @@ function Home() {
         </div>
       </section>
 
-
       {/* DEPOIMENTOS */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
@@ -116,10 +102,6 @@ function Home() {
 
           <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
 
-            {/* CARDS */}
-
-
-            {/* CARD 1 */}
             <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
@@ -129,7 +111,6 @@ function Home() {
               <span className="text-gray-700">— Adriana Leite, Coordenadora de RH</span>
             </div>
 
-            {/* CARD 2 */}
             <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
@@ -139,7 +120,6 @@ function Home() {
               <span className="text-gray-700">— Aimeé Ferreira, Diretora de Talentos</span>
             </div>
 
-            {/* CARD 3 */}
             <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
@@ -149,7 +129,6 @@ function Home() {
               <span className="text-gray-700">— Rafael Queiroz, Diretor Executivo</span>
             </div>
 
-            {/* CARD 4 */}
             <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200
                         hover:shadow-xl hover:-translate-y-1 hover:shadow-orange-200/60
                         transition-all duration-300">
@@ -159,14 +138,11 @@ function Home() {
               <span className="text-gray-700">— Camila Evangelista, Diretora de Empregabilidade</span>
             </div>
 
-
-
-
           </div>
         </div>
       </section>
-    </div>
 
+    </div>
   );
 }
 

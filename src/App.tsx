@@ -14,11 +14,13 @@ import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
 import Perfil from './pages/perfil/Perfil';
 import AtualizarPerfil from './pages/perfil/AtualizarPerfil';
-import Footer from './components/navbar/Navbar';
+
 import ChatFAQ from './components/ChatFAQ';
+import Footer from './components/footer/Footer';
 
 function App() {
   return (
+    <>
     <AuthProvider>
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
@@ -49,11 +51,12 @@ function App() {
               {/* Cadastro */}
               <Route path="/cadastro" element={<Cadastro />} />
             </Routes>
-            <Footer />
           </div>
+         <Footer />
         </div>
       </BrowserRouter>
     </AuthProvider>
+   </> 
   );
 }
 
