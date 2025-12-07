@@ -46,7 +46,7 @@ function ListaDepartamentos() {
     <>
       {isLoading && (
         <div className="flex justify-center w-full my-8">
-          <SyncLoader color="#312e81" size={32} />
+          <SyncLoader color="#FF8C00" size={32} />
         </div>
       )}
 

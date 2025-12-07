@@ -20,6 +20,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   const [departamento, setDepartamento] = useState<Departamentos>({
     nome: "",
   });
+  const payload = { ...departamento, id: Number(id) }; 
 
 
   async function listarPorId(id: string) {
@@ -45,7 +46,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   }, [token]);
 
   useEffect(() => {
-    if (id) listarPorId(id);
+    if (id !== undefined) listarPorId(id);
   }, [id]);
 
   function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
@@ -60,8 +61,8 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
     setIsLoading(true);
 
     try {
-      if (id) {
-        await atualizar(`/departamentos`, departamento, setDepartamento, {
+      if (id !== undefined) {
+        await atualizar(`/departamentos`, payload, setDepartamento, {
           headers: { Authorization: token },
         });
         alert("Departamento atualizado com sucesso!");
@@ -91,7 +92,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 sm:py-20 mx-auto bg-gray-200">
       <h1 className="my-8 text-lg text-center md:text-4xl font-bold uppercase py-6 text-orange-400 gap-4">
-        {id ? "Editar Departamento" : "Cadastrar Departamento"}
+        {id === undefined ? "Editar Departamento" : "Cadastrar Departamento"}
       </h1>
 
       <form
@@ -115,7 +116,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
           className="flex justify-center w-full py-2 mx-auto text-base rounded text-slate-100 font-bold bg-orange-400 hover:bg-orange-200 md:w-1/2 md:text-lg"
           type="submit"
         >
-          {isLoading ? <ClipLoader color="#ffffff" size={24} /> : <span>{id ? "Atualizar" : "Cadastrar"}</span>}
+          {isLoading ? <ClipLoader color="#FFA500" size={24} /> : <span>{id === undefined ? "Atualizar" : "Cadastrar"}</span>}
         </button>
       </form>
     </div>
