@@ -7,7 +7,7 @@ import { ClipLoader } from "react-spinners";
 
 function DeletarDepartamentos() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
 
@@ -19,7 +19,7 @@ function DeletarDepartamentos() {
       await listar(`/departamentos/${id}`, undefined, {
         headers: { Authorization: token },
       }).then(data => {
-        setDepartamento(data);
+        setDepartamento(data)
       });
     } catch (error: any) {
       if (String(error).includes("401")) {

@@ -102,8 +102,6 @@ function ListarColaboradores() {
               <CardColaboradores
                 key={colab.id}
                 colaboradores={colab}
-                onCalcular={() => console.log("Calcular salário", colab)}
-                onHolerite={() => console.log("Gerar holerite", colab)}
               />
             ))}
           </div>

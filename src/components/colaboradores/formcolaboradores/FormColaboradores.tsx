@@ -20,7 +20,7 @@ interface FormColaboradoresProps {
 }
 
 function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
-  const { id } = useParams<{ id?: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const { usuario, handleLogout } = useContext(AuthContext);
@@ -43,7 +43,7 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
 
       setColaborador(data);
       if (data.nome) {
-        setDepartamentoId(data.nome);
+        setDepartamentoId(data.id)
       }
     } catch {
       alert("Erro ao listar colaborador!");

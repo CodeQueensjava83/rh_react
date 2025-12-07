@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   PencilIcon,
   TrashIcon,
@@ -8,16 +7,12 @@ import {
 } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
 import type Colaboradores from '../../../modals/Colaboradores';
-import ModalCalcularSalario from '../modalcolaboradores/ModalCalcularSalario';
 
 interface CardColaboradoresProps {
   colaboradores: Colaboradores;
 }
 
 function CardColaboradores({ colaboradores }: CardColaboradoresProps) {
-  const [, setHolerite] = useState<any | null>(null);
-  const [openCalcular, setOpenCalcular] = useState(false);
-  const [, setOpenHolerite] = useState(false);
 
   return (
     <>
@@ -61,30 +56,7 @@ function CardColaboradores({ colaboradores }: CardColaboradoresProps) {
             </span>
           </div>
         </div>
-
-        {/* Botões */}
-        <div className="flex gap-2 pt-2">
-          <button
-            className="flex-1 py-2 bg-amber-500 text-white rounded hover:bg-amber-400 transition-colors text-sm"
-            onClick={() => setOpenCalcular(true)}
-          >
-            Calcular Salário
-          </button>
-        </div>
       </div>
-
-      {/* Modais */}
-      {openCalcular && (
-        <ModalCalcularSalario
-          colaboradoresId={colaboradores.id}
-          onClose={() => setOpenCalcular(false)}
-          onSuccess={(hol) => {
-            setHolerite(hol);
-            setOpenCalcular(false);
-            setOpenHolerite(true);
-          }}
-        />
-      )}
     </>
   );
 }

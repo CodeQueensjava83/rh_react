@@ -7,14 +7,14 @@ import { AuthContext } from "../../../contexts/AuthContext";
 
 function DeletarColaboradores() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const { usuario, handleLogout } = useContext(AuthContext);
   const token = usuario.token;
 
   const [isLoading, setIsLoading] = useState(false);
   const [colaborador, setColaborador] = useState<Colaboradores | null>(null);
 
-  async function buscarColaboradorPorId(id: string) {
+  async function buscarColaboradorPorId(id: number) {
     try {
       const data = await listar(`/colaboradores/${id}`, undefined, {
         headers: { Authorization: token },
