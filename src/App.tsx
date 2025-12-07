@@ -14,6 +14,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import Cadastro from './pages/cadastro/Cadastro';
 import Perfil from './pages/perfil/Perfil';
 import AtualizarPerfil from './pages/perfil/AtualizarPerfil';
+import Footer from './components/navbar/Navbar';
+import ChatFAQ from './components/ChatFAQ';
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
               <Route path="/oque-fazemos" element={<OQueFazemos />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/atualizarusuario" element={<AtualizarPerfil />} />
+              <Route path="/chat" element={<ChatFAQ />} />
 
               {/* Colaboradores */}
               <Route path="/colaboradores/all" element={<ListaColaboradores />} />
@@ -46,6 +49,7 @@ function App() {
               {/* Cadastro */}
               <Route path="/cadastro" element={<Cadastro />} />
             </Routes>
+            <Footer />
           </div>
         </div>
       </BrowserRouter>

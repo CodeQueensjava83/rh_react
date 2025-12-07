@@ -61,12 +61,12 @@ function ListarColaboradores() {
   return (
     <>
       {/* Botão que ABRE a modal */}
-      <div className="flex justify-center my-4">
+      <div className="flex justify-end my-4">
         <button
           onClick={() => setShowCreateModal(true)}
           className="bg-amber-500 hover:bg-amber-800 text-white px-4 py-2 rounded"
         >
-          Novo Colaborador
+          + Cadastrar Colaborador
         </button>
       </div>
 

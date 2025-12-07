@@ -3,7 +3,7 @@ import {
   useState,
   type ChangeEvent,
   type FormEvent,
-  useContext
+  useContext,
 } from "react";
 import { ClipLoader } from "react-spinners";
 import { useParams, useNavigate } from "react-router-dom";
@@ -20,7 +20,6 @@ interface FormColaboradoresProps {
 }
 
 function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
-
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
 
@@ -30,9 +29,7 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
-  const [departamento, setDepartamento] = useState<Departamentos>({
-    nome: "",
-  });
+  const [departamentoId, setDepartamentoId] = useState<number>(0);
 
   const [colaborador, setColaborador] = useState<Colaboradores>(
     {} as Colaboradores
@@ -45,8 +42,8 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
       });
 
       setColaborador(data);
-      if (data.departamento) {
-        setDepartamento(data.departamento);
+      if (data.departamento?.id) {
+        setDepartamentoId(data.departamento.id);
       }
     } catch {
       alert("Erro ao listar colaborador!");
@@ -63,19 +60,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     }
   }
 
-  async function buscarDepartamentoPorId(deptId: string) {
-    try {
-      const data = await listar<Departamentos>(`/departamentos/${deptId}`, undefined, {
-        headers: { Authorization: token },
-      });
-
-      setDepartamento(data);
-      setColaborador({ ...colaborador, departamento: data });
-    } catch {
-      alert("Erro ao buscar departamento!");
-    }
-  }
-
   useEffect(() => {
     buscarDepartamentos();
     if (id) buscarColaboradorPorId(id);
@@ -87,13 +71,14 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
 
     if (type === "number" && value !== "") {
       const valorSemZeros = value.replace(/^0+(?!$)/, "") || "0";
-      valor = parseFloat(Number(valorSemZeros).toFixed(2));
+      valor = name === "salario"
+        ? parseFloat(Number(valorSemZeros).toFixed(2))
+        : parseInt(valorSemZeros);
     }
 
     setColaborador({
       ...colaborador,
       [name]: valor,
-      departamento: departamento,
     });
   }
 
@@ -105,29 +90,36 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
     try {
       let colaboradorSalvo: Colaboradores;
 
+      const payload = {
+        ...colaborador,
+        id: id ? Number(id) : undefined,
+        departamento: { id: departamentoId },
+      };
+
       if (id) {
-        colaboradorSalvo = await atualizar<Colaboradores>(`/colaboradores/${id}`, colaborador, undefined, {
-          headers: { Authorization: token },
-        });
+        colaboradorSalvo = await atualizar<Colaboradores>(
+          `/colaboradores/atualizar`,
+          payload,
+          undefined,
+          { headers: { Authorization: token } }
+        );
         alert("Colaborador atualizado com sucesso!");
       } else {
-        colaboradorSalvo = await cadastrar<Colaboradores>(`/colaboradores`, colaborador, undefined, {
-          headers: { Authorization: token },
-        });
+        colaboradorSalvo = await cadastrar<Colaboradores>(
+          `/colaboradores/cadastrar`,
+          payload,
+          undefined,
+          { headers: { Authorization: token } }
+        );
         alert("Colaborador cadastrado com sucesso!");
       }
 
-      if (onSuccess) {
-        onSuccess(colaboradorSalvo);
-      }
-
-      if (onClose) {
-        onClose();
-      } else {
-        navigate("/colaboradores/all");
-      }
+      if (onSuccess) onSuccess(colaboradorSalvo);
+      if (onClose) onClose();
+      else navigate("/colaboradores/all");
 
     } catch (error: any) {
+      console.error("Erro detalhado:", error.response?.data || error);
       if (String(error).includes("401")) {
         handleLogout();
       } else {
@@ -140,10 +132,9 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
 
   const formContent = (
     <form
-      className="flex flex-col w-full max-w-xl gap-4 p-4 bg-white border shadow-sm rounded-xl border-slate-200"
+      className="flex flex-col w-full max-w-xl space-y-4 p-6 bg-white border shadow-sm rounded-xl border-slate-200"
       onSubmit={gerarNovoColaborador}
     >
-      {/* Título quando usado como página */}
       {!onClose && (
         <h1 className="text-2xl font-bold text-center text-orange-400 mb-4">
           {id ? "Editar Colaborador" : "Novo Colaborador"}
@@ -161,7 +152,7 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
             required
             value={colaborador.nome || ""}
             onChange={atualizarEstado}
-            className="p-2 border rounded-lg"
+            className="p-2 border rounded-lg text-left"
           />
         </div>
 
@@ -189,11 +180,11 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
             name="cargo"
             value={colaborador.cargo || ""}
             onChange={atualizarEstado}
-            className="p-2 border rounded-lg"
+            className="p-2 border rounded-lg text-left"
           />
         </div>
 
-        <div className="flex flex-col gap-2 w-30">
+        <div className="flex flex-col gap-2 w-1/4">
           <label htmlFor="salario">Salário</label>
           <input
             type="number"
@@ -207,7 +198,7 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-2 w-30">
+        <div className="flex flex-col gap-2 w-1/4">
           <label htmlFor="horasMensais">Horas Mensais</label>
           <input
             type="number"
@@ -229,7 +220,7 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
           name="setor"
           value={colaborador.setor || ""}
           onChange={atualizarEstado}
-          className="p-2 border rounded-lg"
+          className="p-2 border rounded-lg text-left"
         />
       </div>
 
@@ -239,14 +230,13 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         <select
           id="departamento"
           name="departamento"
-          value={departamento.id !== 0 ? departamento.id : ""}
-          onChange={(e) => buscarDepartamentoPorId(e.target.value)}
-          className="p-2 border rounded-lg"
+          value={departamentoId || ""}
+          onChange={(e) => setDepartamentoId(Number(e.target.value))}
+          className="p-2 border rounded-lg bg-white"
         >
           <option value="" disabled>
             Selecione um departamento
           </option>
-
           {departamentos.map((d) => (
             <option key={d.id} value={d.id}>
               {d.nome}
@@ -255,23 +245,19 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
         </select>
       </div>
 
-      {/* 
-      */}
       {/* Botões */}
       <div className="flex pt-2 gap-2">
-        {/* Botão de Cancelar/Voltar */}
         <button
           type="button"
           onClick={onClose ? onClose : () => navigate("/colaboradores/all")}
-          className="w-1/2 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+          className="w-1/2 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors"
         >
           {onClose ? "Cancelar" : "Voltar"}
         </button>
 
-        {/* Botão de Submit */}
         <button
           type="submit"
-          className="w-1/2 py-2 bg-amber-500 text-white rounded hover:bg-amber-600"
+          className="w-1/2 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors flex items-center justify-center"
         >
           {isLoading ? (
             <ClipLoader color="#ffffff" size={24} />
@@ -280,8 +266,6 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
           )}
         </button>
       </div>
-      {/* 
-      */}
     </form>
   );
 
