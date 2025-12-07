@@ -1,7 +1,6 @@
 import Popup from "reactjs-popup";
-import { jsPDF } from "jspdf";
+import jsPDF from "jspdf";
 import type Colaboradores from "../../../modals/Colaboradores";
-
 
 interface ModalCalcularSalarioProps {
   colaboradoresId: number;
@@ -27,16 +26,16 @@ function ModalCalcularSalario({ colaboradoresId, colaborador, onClose }: ModalCa
     doc.text("HOLERITE", 105, 20, { align: "center" });
 
     doc.setFontSize(12);
-    doc.text(Nome: ${colaborador.nome}, 20, 40);
-    doc.text(Cargo: ${colaborador.cargo}, 20, 50);
-    doc.text(Setor: ${colaborador.setor}, 20, 60);
-    doc.text(Valor Hora: ${formatarValor(valorHora)}, 20, 70);
-    doc.text(Horas Mensais: ${colaborador.horasMensais}, 20, 80);
-    doc.text(Dependentes: ${colaborador.dependentes}, 20, 90);
+    doc.text(`Nome: ${colaborador.nome}`, 20, 40);
+    doc.text(`Cargo: ${colaborador.cargo}`, 20, 50);
+    doc.text(`Setor: ${colaborador.setor}`, 20, 60);
+    doc.text(`Valor Hora: ${formatarValor(valorHora)}`, 20, 70);
+    doc.text(`Horas Mensais: ${colaborador.horasMensais}`, 20, 80);
+    doc.text(`Dependentes: ${colaborador.dependentes}`, 20, 90);
 
-    doc.text(Salário Bruto: ${formatarValor(salarioBruto)}, 20, 110);
-    doc.text(Descontos: ${formatarValor(descontos)}, 20, 120);
-    doc.text(Salário Líquido: ${formatarValor(salarioLiquido)}, 20, 130);
+    doc.text(`Salário Bruto: ${formatarValor(salarioBruto)}`, 20, 110);
+    doc.text(`Descontos: ${formatarValor(descontos)}`, 20, 120);
+    doc.text(`Salário Líquido: ${formatarValor(salarioLiquido)}`, 20, 130);
 
     // Abre o PDF em nova aba
     window.open(doc.output("bloburl"), "_blank");
