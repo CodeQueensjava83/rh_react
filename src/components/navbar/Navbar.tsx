@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { List, X, User, CaretDown } from "@phosphor-icons/react";
+import { CaretDownIcon, ListIcon, UserIcon, XIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -20,48 +20,44 @@ export default function Navbar() {
           className="md:hidden text-3xl"
           onClick={() => setOpen(!open)}
         >
-          {open ? <X /> : <List />}
+          {open ? <XIcon /> : <ListIcon />}
         </button>
 
         {/* MENU */}
         <ul
-          className={`md:flex gap-10 font-medium md:static absolute bg-orange-500 
-          w-full left-0 md:w-auto md:p-0 p-4 transition-all duration-300 
-          ${open ? "top-16" : "top-[-500px]"}`}
+          className={`md:flex md:items-center font-medium md:static absolute bg-orange-500 
+            w-full left-0 md:w-auto md:p-0 p-4 transition-all duration-300 
+            flex flex-col md:flex-row gap-4
+            ${open ? "top-16" : "top-[-500px]"}`}
         >
 
           {/* SOLUÇÕES + SUBMENU */}
-          <li className="relative group">
+          <li className="relative group flex items-center">
             <button
-              className="flex items-center gap-1 hover:opacity-80 transition 
-                         text-lg md:text-xl"
+              className="flex items-center gap-1 hover:opacity-80 transition text-lg md:text-xl"
               onClick={() => setSubmenuOpen(!submenuOpen)}
             >
-              Soluções <CaretDown size={18} weight="bold" />
+              Soluções <CaretDownIcon size={18} weight="bold" />
             </button>
 
             {/* SUBMENU DESKTOP */}
-            <ul
-              className="hidden group-hover:flex flex-col absolute left-0 mt-2 bg-white text-gray-700
-              shadow-lg rounded-lg overflow-hidden w-40 transition-all duration-200 z-50"
-            >
-              <Link to="/colaboradores" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
-              <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamento</Link>
-              <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuário</Link>
+            <ul className="group-hover:flex flex-col absolute left-0 top-full mt-2 bg-white text-gray-700 shadow-lg rounded-lg overflow-hidden opacity-0 
+              group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaboradores</Link>
+              <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamentos</Link>
             </ul>
 
             {/* SUBMENU MOBILE */}
             {submenuOpen && (
               <ul className="flex flex-col md:hidden bg-white text-gray-700 mt-2 rounded-lg shadow z-50">
-                <Link to="/colaborador/all" className="px-4 py-2 hover:bg-orange-100">Colaborador</Link>
-                <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamento</Link>
-                <Link to="/usuarios" className="px-4 py-2 hover:bg-orange-100">Usuário</Link>
+                <Link to="/colaboradores/all" className="px-4 py-2 hover:bg-orange-100">Colaboradores</Link>
+                <Link to="/departamentos" className="px-4 py-2 hover:bg-orange-100">Departamentos</Link>
               </ul>
             )}
           </li>
 
           {/* O QUE FAZEMOS */}
-          <li>
+          <li className="flex items-center">
             <Link
               to="/oque-fazemos"
               className="hover:opacity-80 transition text-lg md:text-xl"
@@ -71,7 +67,7 @@ export default function Navbar() {
           </li>
 
           {/* QUEM SOMOS */}
-          <li>
+          <li className="flex items-center">
             <Link
               to="/quem-somos"
               className="hover:opacity-80 transition text-lg md:text-xl"
@@ -80,15 +76,27 @@ export default function Navbar() {
             </Link>
           </li>
 
-          {/* LOGIN */}
-          <li>
+          {/* PERFIL */}
+          <li className="flex items-center">
             <Link
-              to="/login"
-              className="flex items-center gap-2 border border-white rounded-full px-5 py-2 
-                        hover:bg-white hover:text-orange-500 transition font-semibold
-                        text-lg md:text-xl"
+              to="/perfil"
+              className="flex items-center justify-center gap-2 border border-white rounded-full 
+                px-5 py-2 h-12 md:h-auto hover:bg-white hover:text-orange-500
+                transition font-semibold text-lg md:text-xl"
             >
-              <User size={22} weight="bold" /> Login
+              <UserIcon size={22} weight="bold" /> Perfil
+            </Link>
+          </li>
+
+          {/* Sair */}
+          <li className="flex items-center">
+            <Link
+              to="/logout"
+              className="flex items-center gap-2 border border-white rounded-full px-5 py-[7px]
+                hover:bg-white hover:text-orange-500 transition font-semibold
+                text-lg md:text-xl"
+            >
+              <UserIcon size={22} weight="bold" /> Sair
             </Link>
           </li>
         </ul>

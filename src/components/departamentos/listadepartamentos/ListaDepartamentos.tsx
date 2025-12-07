@@ -1,61 +1,110 @@
-import { useEffect, useState } from "react";
-import { ClipLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { SyncLoader } from "react-spinners";
 import type Departamentos from "../../../modals/Departamentos";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { listar } from "../../../services/Service";
 import CardDepartamentos from "../carddepartamentos/CardDepartamentos";
+import FormDepartamentos from "../formdepartamentos/FormDepartamentos"; // importa seu form
 
-function ListarDepartamentos() {
-	const [isLoading, setIsLoading] = useState(true)
+function ListaDepartamentos() {
+  const navigate = useNavigate();
 
-	const [departamentos, setDepartamentos] = useState<Departamentos[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [departamentos, setDepartamentos] = useState<Departamentos[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // controla modal
 
-	async function buscarDepartamento() {
-		await listar("/departamentos", setDepartamentos)
-	}
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
-	useEffect(() => {
-		setIsLoading(true)
-		buscarDepartamento().finally(() => setIsLoading(false))
-	}, [])
+  useEffect(() => {
+    if (token === "") {
+      navigate("/");
+    }
+  }, [token]);
 
- 
+  useEffect(() => {
+    listarDepartamentos();
+  }, []);
+
+  async function listarDepartamentos() {
+    try {
+      setIsLoading(true);
+      await listar("/departamentos", setDepartamentos, {
+        headers: { Authorization: token },
+      });
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
-   <>
-			{isLoading && (
-				<div className="flex justify-center items-center min-h-[calc(100vh-8rem)] w-full overflow-x-hidden">
-					<ClipLoader
-						color="#0D9488"
-						size={80}
-						speedMultiplier={2}
-						aria-label="loading"
-					/>
-				</div>
-			)}
+    <>
+      {isLoading && (
+        <div className="flex justify-center w-full my-8">
+          <SyncLoader color="#FF8C00" size={32} />
+        </div>
+      )}
 
-			<div className="flex justify-center w-full min-h-[calc(100vh-8rem)] overflow-x-hidden bg-gray-200 not-even:">
-				<div className="box-border w-full px-4 py-4 mt-8 mb-4 max-w-8xl sm:px-6 md:px-8 lg:px-12 md:py-6">
-					{!isLoading && departamentos.length === 0 && (
-						<div className="my-8 text-2xl text-center md:text-3xl text-slate-700 md:my-16">
-							Nenhum departamento foi encontrado
-						</div>
-					)}
+      <div className="flex justify-center w-full px-4 my-4">
+        <div className="container flex flex-col">
+          {/* Botão para abrir modal */}
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 text-white bg-orange-400 rounded hover:bg-orange-300"
+            >
+              + Cadastrar Departamento
+            </button>
+          </div>
 
-          <div className="flex flex-col items-center justify-center bg-gray-200 ">
-            <h1 className="my-4 text-xl text-center md:text-4xl font-bold py-6 text-orange-500 gap-4">
-                Departamentos
-            </h1>
-  
-					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-12 mb-4 md:mb-0">
-						{departamentos.map((departamentos) => (
-							<CardDepartamentos key={departamentos.id} departamentos={departamentos}/>
-						))}
+          {!isLoading && departamentos.length === 0 && (
+            <span className="text-3xl text-center my-8">
+              Nenhum departamento foi encontrado!
+            </span>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {departamentos.map((departamento) => (
+              <CardDepartamentos
+                key={departamento.nome}
+                departamentos={departamento}
+              />
+            ))}
           </div>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-orange-400">
+                Cadastrar Departamento
+              </h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <FormDepartamentos 
+                onSuccess={() => {
+                    setIsModalOpen(false);
+                    listarDepartamentos();
+                }}
+            />
           </div>
-				</div>
-			</div>
-		</>
-	)
+        </div>
+      )}
+    </>
+  );
 }
 
-
-export default ListarDepartamentos
+export default ListaDepartamentos;

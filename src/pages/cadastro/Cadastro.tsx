@@ -1,190 +1,166 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import type Usuario from "../../modals/Usuario";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { cadastrarUsuario } from "../../services/Service";
 import { ClipLoader } from "react-spinners";
-import { ToastAlerta } from "../../utils/ToastAlert";
+import { cadastrarUsuario } from "../../services/Service";
+import type Usuario from "../../modals/Usuario";
 
 function Cadastro() {
+  const navigate = useNavigate();
 
-	// Objeto responsável por redirecionar o usuário para uma outra rota
-	const navigate = useNavigate();
-	
-	// Controlar a exibição do Loader (animação de carregamento)
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	
-	// Validar a digitação da senha do usuário
-	const [confirmarSenha, setConfirmarSenha] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [confirmarSenha, setConfirmarSenha] = useState("");
 
-	// Guardar os dados do usuário
-	const [usuario, setUsuario] = useState<Usuario>({
-		id: 0,
-		nome: "",
-		usuario: "",
-		senha: "",
-		foto: "",
-		colaboradores: null
-	})
+  const [usuario, setUsuario] = useState<Usuario>({
+    nome: "",
+    usuario: "",
+    senha: "",
+    foto: ""
+  });
 
-	useEffect( () => {
-		if(usuario.id !== 0){
-			retornar();
-		}
-	}, [usuario])
+  function retornar() {
+    navigate("/");
+  }
 
-	function retornar(){
-		navigate("/");
-	}
+  function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
+    setUsuario({
+      ...usuario,
+      [e.target.name]: e.target.value
+    });
+  }
 
-	function atualizarEstado(e: ChangeEvent<HTMLInputElement>){
-		setUsuario({
-			...usuario,
-			[e.target.name]: e.target.value
-		})
-	}
+  function handleConfirmarSenha(e: ChangeEvent<HTMLInputElement>) {
+    setConfirmarSenha(e.target.value);
+  }
 
-	function handleConfirmarSenha(e: ChangeEvent<HTMLInputElement>){
-		setConfirmarSenha(e.target.value);
-	}
+  async function cadastrarNovoUsuario(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsLoading(true);
 
-	async function cadastrarNovoUsuario(e: FormEvent<HTMLFormElement>){
-		e.preventDefault();
+    if (!usuario.foto || usuario.foto.trim().length === 0) {
+      alert("É obrigatório informar a URL da foto!");
+      setIsLoading(false);
+      return;
+    }
 
-		setIsLoading(true);
+    if (confirmarSenha === usuario.senha && usuario.senha.length >= 8) {
+      try {
+        await cadastrarUsuario("/usuarios/cadastrar", usuario);
+        alert("Usuário cadastrado com sucesso!");
+        retornar();
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao cadastrar usuário!");
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      alert("As senhas não conferem ou são muito curtas!");
+      setUsuario({ ...usuario, senha: "" });
+      setConfirmarSenha("");
+      setIsLoading(false);
+    }
+  }
 
-		if(confirmarSenha === usuario.senha && usuario.senha.length >= 8){
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 h-screen place-items-center font-bold">
+      <div
+        className='bg-[url("https://ik.imagekit.io/codequeens/rh_logo.jpg?updatedAt=1761765415212")] lg:block hidden bg-no-repeat w-full min-h-screen bg-cover bg-center'
+      ></div>
 
-			try{
+      <form
+        className="flex justify-center items-center flex-col w-2/3 gap-3"
+        onSubmit={cadastrarNovoUsuario}
+      >
+        <h2 className="text-slate-900 text-5xl">Cadastrar</h2>
 
-				await cadastrarUsuario(`/usuarios/cadastrar`, usuario, setUsuario);
-				ToastAlerta('Usuário cadastrado com sucesso!', 'sucesso');
+        <div className="flex flex-col w-full">
+          <label htmlFor="nome">Nome</label>
+          <input
+            type="text"
+            id="nome"
+            name="nome"
+            placeholder="Nome"
+            className="border-2 border-slate-700 rounded p-2"
+            value={usuario.nome}
+            onChange={atualizarEstado}
+          />
+        </div>
 
-			}catch(error){
-				ToastAlerta('Erro ao cadastrar o usuário!', 'erro');
-			}
+        <div className="flex flex-col w-full">
+          <label htmlFor="usuario">Usuário</label>
+          <input
+            type="text"
+            id="usuario"
+            name="usuario"
+            placeholder="Usuário"
+            className="border-2 border-slate-700 rounded p-2"
+            value={usuario.usuario}
+            onChange={atualizarEstado}
+          />
+        </div>
 
-		}else{
-			ToastAlerta("Dados do usuário inconsistentes! Verifique as informações do cadastro.", 'erro');
-			setUsuario({
-				...usuario,
-				senha: ''
-			});
-			setConfirmarSenha('');
-		}
+        <div className="flex flex-col w-full">
+          <label htmlFor="foto">Foto</label>
+          <input
+            type="text"
+            id="foto"
+            name="foto"
+            placeholder="Foto"
+            className="border-2 border-slate-700 rounded p-2"
+            value={usuario.foto}
+            onChange={atualizarEstado}
+          />
+        </div>
 
-		setIsLoading(false);
-	}
+        <div className="flex flex-col w-full">
+          <label htmlFor="senha">Senha</label>
+          <input
+            type="password"
+            id="senha"
+            name="senha"
+            placeholder="Senha"
+            className="border-2 border-slate-700 rounded p-2"
+            value={usuario.senha}
+            onChange={atualizarEstado}
+          />
+        </div>
 
-	console.log(JSON.stringify(usuario));
-	console.log("Confirmar Senha: " + confirmarSenha);
+        <div className="flex flex-col w-full">
+          <label htmlFor="confirmarSenha">Confirmar Senha</label>
+          <input
+            type="password"
+            id="confirmarSenha"
+            name="confirmarSenha"
+            placeholder="Confirmar Senha"
+            className="border-2 border-slate-700 rounded p-2"
+            value={confirmarSenha}
+            onChange={handleConfirmarSenha}
+          />
+        </div>
 
-	return (
-		<>
-			<div
-				className="grid grid-cols-1 lg:grid-cols-2 h-screen 
-            place-items-center font-bold"
-			>
-				<div
-					className="bg-[url('https://i.imgur.com/ZZFAmzo.jpg')] lg:block hidden bg-no-repeat 
-                    w-full min-h-screen bg-cover bg-center"
-				></div>
-				<form className="flex justify-center items-center flex-col w-2/3 gap-3"
-					onSubmit={cadastrarNovoUsuario}
-				>
-					<h2 className="text-slate-900 text-5xl">Cadastrar</h2>
-					<div className="flex flex-col w-full">
-						<label htmlFor="nome">Nome</label>
-						<input
-							type="text"
-							id="nome"
-							name="nome"
-							placeholder="Nome"
-							className="border-2 border-slate-700 rounded p-2"
-							value={usuario.nome}
-							onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-						/>
-					</div>
-					<div className="flex flex-col w-full">
-						<label htmlFor="usuario">Usuario</label>
-						<input
-							type="text"
-							id="usuario"
-							name="usuario"
-							placeholder="Usuario"
-							className="border-2 border-slate-700 rounded p-2"
-							value={usuario.usuario}
-							onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-						/>
-					</div>
-					<div className="flex flex-col w-full">
-						<label htmlFor="foto">Foto</label>
-						<input
-							type="text"
-							id="foto"
-							name="foto"
-							placeholder="Foto"
-							className="border-2 border-slate-700 rounded p-2"
-							value={usuario.foto}
-							onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-						/>
-					</div>
-					<div className="flex flex-col w-full">
-						<label htmlFor="senha">Senha</label>
-						<input
-							type="password"
-							id="senha"
-							name="senha"
-							placeholder="Senha"
-							className="border-2 border-slate-700 rounded p-2"
-							value={usuario.senha}
-							onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-						/>
-					</div>
-					<div className="flex flex-col w-full">
-						<label htmlFor="confirmarSenha">Confirmar Senha</label>
-						<input
-							type="password"
-							id="confirmarSenha"
-							name="confirmarSenha"
-							placeholder="Confirmar Senha"
-							className="border-2 border-slate-700 rounded p-2"
-							value={confirmarSenha}
-							onChange={(e: ChangeEvent<HTMLInputElement>) => handleConfirmarSenha(e)}
-						/>
-					</div>
-					<div className="flex justify-around w-full gap-8">
-						<button
-							type="reset"
-							className="rounded text-white bg-red-400 hover:bg-red-700 w-1/2 py-2"
-							onClick={retornar}
-						>
-							Cancelar
-						</button>
-						<button
-							type="submit"
-							className="rounded text-white bg-indigo-400 hover:bg-indigo-900
-                       w-1/2 py-2 flex justify-center"
-						>
-							{
-								isLoading ?
+        <div className="flex justify-around w-full gap-8">
+          <button
+            type="reset"
+            className="rounded bg-gray-400 text-white hover:bg-red-700 w-1/2 py-2"
+            onClick={retornar}
+          >
+            Cancelar
+          </button>
 
-									<ClipLoader
-										color="#ffffff"
-										size={24}
-									/>
-
-								:
-
-									<span>Cadastrar</span>
-
-							}
-							
-						</button>
-					</div>
-				</form>
-			</div>
-		</>
-	)
+          <button
+            type="submit"
+            className="rounded text-white bg-amber-500 hover:bg-amber-600 w-1/2 py-2 flex justify-center"
+          >
+            {isLoading ? (
+              <ClipLoader color="#ffffff" size={24} />
+            ) : (
+              <span>Cadastrar</span>
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
-export default Cadastro
+export default Cadastro;

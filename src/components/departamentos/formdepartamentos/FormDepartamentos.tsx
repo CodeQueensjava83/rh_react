@@ -1,29 +1,52 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useContext, useState, useEffect, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import { atualizar, cadastrar, listar } from "../../../services/Service";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { listar, atualizar, cadastrar } from "../../../services/Service";
 import type Departamentos from "../../../modals/Departamentos";
 
-function FormDepartamentos() {
+interface FormDepartamentosProps {
+  onSuccess?: () => void;
+}
+
+function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: string }>();
+
+  const { usuario, handleLogout } = useContext(AuthContext);
+  const token = usuario.token;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [departamento, setDepartamento] = useState<Departamentos>({} as Departamentos);
+  const [departamento, setDepartamento] = useState<Departamentos>({
+    nome: "",
+  });
+  const payload = { ...departamento, id: Number(id) }; 
 
-  async function buscarPorId(id: string) {
+
+  async function listarPorId(id: string) {
     try {
-      const data = await listar(`/departamentos/${id}`);
-      setDepartamento(data);
-    } catch (error) {
-      alert("Departamento não encontrado!");
-      console.error(error);
+      await listar(`/departamentos/${id}`, setDepartamento, {
+        headers: { Authorization: token },
+      });
+    } catch (error: any) {
+      if (error.toString().includes("401")) {
+        handleLogout();
+      } else {
+        alert("Departamento não encontrado!");
+      }
       retornar();
     }
   }
 
   useEffect(() => {
-    if (id) buscarPorId(id);
+    if (token === "") {
+      alert("Você precisa estar logado!");
+      navigate("/");
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (id !== undefined) listarPorId(id);
   }, [id]);
 
   function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
@@ -34,25 +57,38 @@ function FormDepartamentos() {
   }
 
   async function gerarNovoDepartamento(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
 
-    try {
-      if (id) {
-        await atualizar(`/departamentos`, departamento);
-        alert("Departamento atualizado com sucesso!");
-      } else {
-        await cadastrar(`/departamentos`, departamento);
-        alert("Departamento cadastrado com sucesso!");
-      }
-      retornar();
-    } catch (error) {
-      alert("Erro ao salvar o departamento!");
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+  try {
+    if (id !== undefined) {
+      await atualizar(`/departamentos`, payload, setDepartamento, {
+        headers: { Authorization: token },
+      });
+      alert("Departamento atualizado com sucesso!");
+    } else {
+      await cadastrar(`/departamentos`, { nome: departamento.nome }, setDepartamento, {
+        headers: { Authorization: token },
+      });
+      alert("Departamento cadastrado com sucesso!");
     }
+
+    if (onSuccess) {
+      onSuccess();
+    } else {
+      retornar(); // <- redireciona para a listagem
+    }
+  } catch (error: any) {
+    if (error.toString().includes("401")) {
+      handleLogout();
+    } else {
+      alert("Erro ao salvar o departamento!");
+    }
+  } finally {
+    setIsLoading(false);
   }
+}
+
 
   function retornar() {
     navigate("/departamentos");
@@ -61,7 +97,7 @@ function FormDepartamentos() {
   return (
     <div className="flex flex-col items-center justify-center py-12 sm:py-20 mx-auto bg-gray-200">
       <h1 className="my-8 text-lg text-center md:text-4xl font-bold uppercase py-6 text-orange-400 gap-4">
-        {id ? "Editar Departamento" : "Cadastrar Departamento"}
+        {id === undefined ? "Editar Departamento" : "Cadastrar Departamento"}
       </h1>
 
       <form
@@ -74,10 +110,10 @@ function FormDepartamentos() {
             type="text"
             placeholder="Departamento"
             id="descricao"
-            name="descricao"
+            name="nome"
             className="p-2 text-base bg-white rounded md:text-lg"
             required
-            value={departamento.descricao || ""}
+            value={departamento.nome || ""}
             onChange={atualizarEstado}
           />
         </div>
@@ -85,7 +121,7 @@ function FormDepartamentos() {
           className="flex justify-center w-full py-2 mx-auto text-base rounded text-slate-100 font-bold bg-orange-400 hover:bg-orange-200 md:w-1/2 md:text-lg"
           type="submit"
         >
-          {isLoading ? <ClipLoader color="#ffffff" size={24} /> : <span>{id ? "Atualizar" : "Cadastrar"}</span>}
+          {isLoading ? <ClipLoader color="#FFA500" size={24} /> : <span>{id ? "Atualizar" : "Cadastrar"}</span>}
         </button>
       </form>
     </div>

@@ -69,7 +69,7 @@ function Login() {
 
         <button
           type="submit"
-          className="rounded bg-indigo-400 flex justify-center hover:bg-indigo-900 text-white w-1/2 py-2"
+          className="rounded bg-orange-400 flex justify-center hover:bg-orange-900 text-white w-1/2 py-2"
         >
           {isLoading ? <ClipLoader color="#ffffff" size={24} /> : <span>Entrar</span>}
         </button>
@@ -78,14 +78,14 @@ function Login() {
 
         <p>
           Ainda não tem uma conta?{" "}
-          <Link to="/cadastro" className="text-indigo-800 hover:underline">
+          <Link to="/cadastro" className="text-orange-400 hover:underline">
             Cadastre-se
           </Link>
         </p>
       </form>
 
       <div
-        className="bg-[url('https://i.imgur.com/ZZFAmzo.jpg')] lg:block hidden bg-no-repeat 
+        className="bg-[url('https://ik.imagekit.io/codequeens/rh_logo.jpg?updatedAt=1761765415212')] lg:block hidden bg-no-repeat 
         w-full min-h-screen bg-cover bg-center"
       ></div>
     </div>
