@@ -38,23 +38,7 @@ A API da NexumRH foi desenvolvida em Java, utilizando o framework Spring, e segu
 
 ------
 
-## 3. Protótipo e Capturas de Tela
-
-
-
-*Adicione print da tela inicial e/ou o link do protótipo no Figma (se houver)*
-
-<div align="center">
-    <img src="mudar" title="source: imgur.com" width="50%"/>
-</div>
-
-<br />
-
-<a href="https://imgur.com/vK8ulM5"><img src="https://i.imgur.com/vK8ulM5.png" title="source: imgur.com" width="3%"/></a> [Protótipo desenvolvido no Figma](link para o Figma do Projeto)
-
-------
-
-## 4. Tecnologias
+## 3. Tecnologias
 
 | Item                         | Descrição  |
 | ---------------------------- | ---------- |
@@ -66,7 +50,7 @@ A API da NexumRH foi desenvolvida em Java, utilizando o framework Spring, e segu
 
 ---
 
-## 5. Pré-requisitos
+## 4. Pré-requisitos
 
 Antes de iniciar, certifique-se de ter as seguintes ferramentas instaladas:
 
@@ -76,7 +60,7 @@ Antes de iniciar, certifique-se de ter as seguintes ferramentas instaladas:
 
 ---
 
-## 6. Configuração e Execução
+## 5. Configuração e Execução
 
 1. Clone o repositório do Projeto
 2. Instale as dependências: `yarn`
@@ -88,7 +72,7 @@ Antes de iniciar, certifique-se de ter as seguintes ferramentas instaladas:
 
 ---
 
-## 7. Estrutura do Projeto
+## 6. Estrutura do Projeto
 
 ```plaintext
 src/
@@ -104,7 +88,7 @@ src/
 
 ---
 
-## 8. Como Contribuir
+## 7. Como Contribuir
 
 1. Faça um fork do projeto
 2. Crie uma branch com a sua feature (`git checkout -b minha-feature`)
