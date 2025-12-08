@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestConfig } from "axios";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_APIURL
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 // ==================== AUTH ====================
@@ -76,11 +76,11 @@ export const deletar = async (
 
 // ==================== SALÁRIO ====================
 
-export const calcularSalario = async <T>(
-  url: string,
-  dadosSalario: any,
-  config: AxiosRequestConfig = {}
-): Promise<T> => {
-  const resposta = await api.post<T>(url, dadosSalario, config);
-  return resposta.data;
-};
+// export const calcularSalario = async <T>(
+//   url: string,
+//   dadosSalario: any,
+//   config: AxiosRequestConfig = {}
+// ): Promise<T> => {
+//   const resposta = await api.post<T>(url, dadosSalario, config);
+//   return resposta.data;
+// };
