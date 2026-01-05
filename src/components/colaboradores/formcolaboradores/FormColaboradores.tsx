@@ -42,10 +42,13 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
       });
 
       setColaborador(data);
-      if (data.nome) {
-        setDepartamentoId(data.id)
+      
+      // 🔧 CORREÇÃO: Usar data.departamento.id ao invés de data.id
+      if (data.departamento?.id) {
+        setDepartamentoId(data.departamento.id);
       }
-    } catch {
+    } catch (error) {
+      console.error("Erro ao buscar colaborador:", error);
       alert("Erro ao listar colaborador!");
     }
   }
@@ -55,7 +58,8 @@ function FormColaboradores({ onClose, onSuccess }: FormColaboradoresProps) {
       await listar<Departamentos[]>(`/departamentos`, setDepartamentos, {
         headers: { Authorization: token },
       });
-    } catch {
+    } catch (error) {
+      console.error("Erro ao buscar departamentos:", error);
       alert("Erro ao listar departamentos!");
     }
   }
