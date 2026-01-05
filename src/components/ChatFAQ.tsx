@@ -144,9 +144,9 @@ Pergunta do colaborador: ${mensagemUsuario}`
               <div className="flex justify-start">
                 <div className="bg-white border-2 border-teal-500 text-gray-800 p-3 rounded-lg max-w-[80%] shadow-sm">
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce delay-100"></div>
-                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce delay-200"></div>
+                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
                     <span className="ml-2">Nex está pensando...</span>
                   </div>
                 </div>
