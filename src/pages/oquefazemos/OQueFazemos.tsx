@@ -55,7 +55,7 @@ export default function OQueFazemos() {
 
         <div className="max-w-screen-xl mx-auto">
           <img
-            src="https://ik.imagekit.io/shaolin/Captura%20de%20tela%202026-01-26%20094839.png"
+            src="https://ik.imagekit.io/shaolin/Captura%20de%20tela%202026-01-26%20162425.png"
             className="w-full max-h-[580px] object-cover object-center rounded-2xl shadow-lg
                        hover:scale-[1.01] transition-all duration-300"
           />
