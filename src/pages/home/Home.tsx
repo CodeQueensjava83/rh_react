@@ -17,10 +17,10 @@ function Home() {
         </video>
 
         {/* OVERLAY SUAVE */}
-        <div className="absolute inset-0 bg-black/20 z-10"></div>
+        <div className="absolute inset-0 bg-black/40 z-10"></div>
 
         {/* TEXTO */}
-        <div className="relative z-20 text-center px-4 max-w-3xl text-gray-700 flex flex-col gap-6 animate-fadein">
+        <div className="relative z-20 text-center px-4 max-w-3xl text-stone-100 flex flex-col gap-6 animate-fadein">
           <h1 className="text-5xl md:text-6xl font-extrabold drop-shadow-lg leading-tight">
             Plataforma completa de RH para empresas que valorizam pessoas
           </h1>
