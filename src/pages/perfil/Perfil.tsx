@@ -19,7 +19,7 @@ function Perfil() {
 			<div className="container mx-auto my-4 rounded-2xl overflow-hidden">
 				<img
 					className="w-full h-72 object-cover border-b-8 border-white"
-					src="https://i.imgur.com/ZZFAmzo.jpg"
+					src="https://ik.imagekit.io/shaolin/Captura%20de%20tela%202026-01-26%20103657.png"
 					alt="Capa do Perfil"
 				/>
 
