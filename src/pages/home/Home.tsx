@@ -25,7 +25,7 @@ function Home() {
             Plataforma completa de RH para empresas que valorizam pessoas
           </h1>
 
-          <p className="text-lg md:text-2xl font-bold text-gray-700">
+          <p className="text-lg md:text-2xl font-bold text-stone-100">
             Conectando pessoas, fortalecendo talentos.
           </p>
 
