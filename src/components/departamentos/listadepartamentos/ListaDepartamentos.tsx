@@ -1,4 +1,4 @@
-rimport { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import type Departamentos from "../../../modals/Departamentos";
