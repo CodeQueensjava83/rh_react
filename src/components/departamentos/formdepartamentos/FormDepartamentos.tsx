@@ -121,7 +121,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
           className="flex justify-center w-full py-2 mx-auto text-base rounded text-slate-100 font-bold bg-orange-400 hover:bg-orange-200 md:w-1/2 md:text-lg"
           type="submit"
         >
-          {isLoading ? <ClipLoader color="#FFA500" size={24} /> : <span>{id ? "Atualizar" : "Editar"}</span>}
+          {isLoading ? <ClipLoader color="#FFA500" size={24} /> : <span>{id ? "Atualizar" : "Cadastrar"}</span>}
         </button>
       </form>
     </div>
