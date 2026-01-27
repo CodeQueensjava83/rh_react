@@ -55,7 +55,7 @@ export default function OQueFazemos() {
 
         <div className="max-w-screen-xl mx-auto">
           <img
-            src="https://ik.imagekit.io/codequeens/NEXUM%20RH/solucao.jpeg"
+            src="https://ik.imagekit.io/codequeens/NEXUM%20RH/solucao1.png"
             className="w-full max-h-[580px] object-cover object-center rounded-2xl shadow-lg
                        hover:scale-[1.01] transition-all duration-300"
           />
