@@ -97,7 +97,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 sm:py-20 mx-auto bg-gray-200">
       <h1 className="my-8 text-lg text-center md:text-4xl font-bold uppercase py-6 text-orange-400 gap-4">
-        {id === undefined ? "Editar Departamento" : "Cadastrar Departamento"}
+        {id === undefined ? "Cadastrar Departamento" : "Cadastrar Departamento"}
       </h1>
 
       <form
@@ -105,7 +105,7 @@ function FormDepartamentos({ onSuccess }: FormDepartamentosProps) {
         onSubmit={gerarNovoDepartamento}
       >
         <div className="flex flex-col gap-2 text-orange-400 text-2xl">
-          <label htmlFor="descricao">Departamento</label>
+          <label htmlFor="descricao">Nome</label>
           <input
             type="text"
             placeholder="Departamento"
