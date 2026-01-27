@@ -84,7 +84,7 @@ function Login() {
       </form>
 
       <div
-        className="bg-[url('https://ik.imagekit.io/codequeens/NEXUM%20RH/logo2.png')] lg:block hidden bg-no-repeat 
+        className="bg-[url('https://ik.imagekit.io/codequeens/NEXUM%20RH/logo3.png')] lg:block hidden bg-no-repeat 
         w-full min-h-screen bg-cover bg-center"
       ></div>
     </div>
