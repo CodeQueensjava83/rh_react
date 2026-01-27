@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+rimport { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
 import type Departamentos from "../../../modals/Departamentos";
@@ -85,7 +85,7 @@ function ListaDepartamentos() {
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-orange-400">
-                Cadastrar Departamento
+                Editar Departamento
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
