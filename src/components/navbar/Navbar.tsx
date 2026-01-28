@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
 import { CaretDownIcon, ListIcon, UserIcon, XIcon } from "@phosphor-icons/react";
 import { useState } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function Navbar() {
+  const { usuario } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [submenuOpen, setSubmenuOpen] = useState(false);
+
+  if (!usuario.token) {
+    return null;
+  }
 
   return (
     <nav className="relative z-50 w-full bg-orange-500 text-white shadow-md">
