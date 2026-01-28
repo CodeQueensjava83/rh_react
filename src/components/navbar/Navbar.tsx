@@ -12,6 +12,11 @@ export default function Navbar() {
     return null;
   }
 
+  function logout() {
+    handleLogout();             
+    navigate("/home", { replace: true }); 
+  }
+
   return (
     <nav className="relative z-50 w-full bg-orange-500 text-white shadow-md">
       <div className="container mx-auto flex justify-between items-center py-4 px-4">
