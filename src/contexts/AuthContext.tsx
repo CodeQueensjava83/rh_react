@@ -50,12 +50,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             token: ""
         })
     }
-      //LOGOUT
-  function handleLogout() {
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("token");
-    setUsuario(usuarioInicial);
-  }
 
     return (
         <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
