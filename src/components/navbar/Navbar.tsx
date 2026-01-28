@@ -9,8 +9,8 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
-  if (!usuario.token) {
-    return null;
+ // if (!usuario.token) {
+  //  return null;
   }
 
   function logout() {
