@@ -15,7 +15,7 @@ export default function Navbar() {
 
   function logout() {
     handleLogout();             
-    navigate("/home", { replace: true }); 
+    navigate("/login", { replace: true }); 
   }
 
   return (
