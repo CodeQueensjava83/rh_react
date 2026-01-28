@@ -5,6 +5,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 export default function Navbar() {
   const { usuario } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [submenuOpen, setSubmenuOpen] = useState(false);
 
