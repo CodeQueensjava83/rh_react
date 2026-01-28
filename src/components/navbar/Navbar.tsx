@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { CaretDownIcon, ListIcon, UserIcon, XIcon } from "@phosphor-icons/react";
 import { useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useContext, AuthContext } from "../../contexts/AuthContext";
 
 export default function Navbar() {
   const { usuario } = useContext(AuthContext);
