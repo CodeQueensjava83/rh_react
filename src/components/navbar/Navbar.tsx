@@ -102,14 +102,14 @@ export default function Navbar() {
 
           {/* Sair */}
           <li className="flex items-center">
-            <Link
-              to="/logout"
+            <button
+              onClick={logout}
               className="flex items-center gap-2 border border-white rounded-full px-5 py-[7px]
                 hover:bg-white hover:text-orange-500 transition font-semibold
                 text-lg md:text-xl"
             >
               <UserIcon size={22} weight="bold" /> Sair
-            </Link>
+            </button>
           </li>
         </ul>
       </div>
