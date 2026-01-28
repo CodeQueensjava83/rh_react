@@ -11,7 +11,7 @@ export default function Navbar() {
 
  // if (!usuario.token) {
   //  return null;
-  }
+  // {
 
   function logout() {
     handleLogout();             
