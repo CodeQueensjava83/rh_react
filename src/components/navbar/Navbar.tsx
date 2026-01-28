@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CaretDownIcon, ListIcon, UserIcon, XIcon } from "@phosphor-icons/react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
