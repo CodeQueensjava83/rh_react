@@ -64,7 +64,7 @@ function Cadastro() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 h-screen place-items-center font-bold">
       <div
-        className='bg-[url("https://ik.imagekit.io/codequeens/rh_logo.jpg?updatedAt=1761765415212")] lg:block hidden bg-no-repeat w-full min-h-screen bg-cover bg-center'
+        className='bg-[url("https://ik.imagekit.io/codequeens/NEXUM%20RH/logo4.png")] lg:block hidden bg-no-repeat w-full min-h-screen bg-cover bg-center'
       ></div>
 
       <form
